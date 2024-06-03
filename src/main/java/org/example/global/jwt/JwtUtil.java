@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.global.config.SecurityUser;
 import org.example.global.encrypt.EncryptionUtils;
 import org.example.global.util.Util;
+import org.example.member.dto.MemberDto;
+import org.example.member.entity.Member;
+import org.example.member.service.MemberService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -18,38 +21,40 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
-//    private final MemberService memberService;
+    private final MemberService memberService;
     private final JwtProvider jwtProvider;
     private final EncryptionUtils encryptionUtils;
 
     //    토큰 발급 구문
-//    public String genAccessToken(String username) {
-//        Member member = memberService.findByUsername(username).orElse(null);
-//        MemberDto memberDto = new MemberDto();
-//        memberDto.setId(member.getId());
-//        memberDto.setUsername(member.getUsername());
-//        memberDto.setName(member.getName());
-//        memberDto.setEmail(member.getEmail());
-//        memberDto.setAuthorities(member.getAuthorities());
-//
-//        if (memberDto == null) return null;
-//
-//        return jwtProvider.genToken(memberDto.toClaims(), 60 * 10);
-//    }
-//
-//    public String genRefreshToken(String username) {
-//        Member member = memberService.findByUsername(username).orElse(null);
-//        MemberDto memberDto = new MemberDto();
-//        memberDto.setId(member.getId());
-//        memberDto.setUsername(member.getUsername());
-//        memberDto.setName(member.getName());
-//        memberDto.setEmail(member.getEmail());
-//        memberDto.setAuthorities(member.getAuthorities());
-//
-//        if (memberDto == null) return null;
-//
-//        return jwtProvider.genToken(memberDto.toClaims(), 60 * 60 * 2);
-//    }
+    public String genAccessToken(String username) {
+        Member member = memberService.findByUsername(username).orElse(null);
+        MemberDto memberDto = new MemberDto();
+        memberDto.setId(member.getId());
+        memberDto.setUsername(member.getUsername());
+        memberDto.setName(member.getName());
+        memberDto.setEmail(member.getEmail());
+        memberDto.setPhoneNumber(member.getPhoneNumber());
+        memberDto.setAuthorities(member.getAuthorities());
+
+        if (memberDto == null) return null;
+
+        return jwtProvider.genToken(memberDto.toClaims(), 60 * 10);
+    }
+
+    public String genRefreshToken(String username) {
+        Member member = memberService.findByUsername(username).orElse(null);
+        MemberDto memberDto = new MemberDto();
+        memberDto.setId(member.getId());
+        memberDto.setUsername(member.getUsername());
+        memberDto.setName(member.getName());
+        memberDto.setEmail(member.getEmail());
+        memberDto.setPhoneNumber(member.getPhoneNumber());
+        memberDto.setAuthorities(member.getAuthorities());
+
+        if (memberDto == null) return null;
+
+        return jwtProvider.genToken(memberDto.toClaims(), 60 * 60 * 2);
+    }
 
     //    토큰으로 사용자 정보 추출해서 SecurityUser객체를 생성하는 구문
     public SecurityUser getUserFromAccessToken(String accessToken) {
@@ -58,7 +63,7 @@ public class JwtUtil {
         String username = (String) payloadBody.get("username");
         List<Map<String, String>> authoritiesList = (List<Map<String, String>>) payloadBody.get("authorities");
 
-//        json 문자열을 파싱하는 구문
+    //        json 문자열을 파싱하는 구문
         List<SimpleGrantedAuthority> authorities = authoritiesList.stream()
                 .map(authMap -> new SimpleGrantedAuthority(authMap.get("authority")))
                 .collect(Collectors.toList());
@@ -88,6 +93,7 @@ public class JwtUtil {
                 "name", bodyClaims.get("name"),
                 "username", bodyClaims.get("username"),
                 "email", bodyClaims.get("email"),
+                "phoneNumber", bodyClaims.get("phoneNumber"),
                 "authorities", bodyClaims.get("authorities")
         );
     }
