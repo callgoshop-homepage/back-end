@@ -16,22 +16,25 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/token", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 public class JwtController {
     private final JwtProvider jwtProvider;
     private final JwtUtil jwtUtil;
 
     @AllArgsConstructor
     @Getter
-    public class newAccessRequest {
+    public class NewAccessRequest {
         private String newAccessToken;
+
+        private String newRefreshToken;
     }
 
     @PostMapping(value = "/access-token", consumes = APPLICATION_JSON_VALUE)
-    public RsData<newAccessRequest> refresh(HttpServletRequest request, HttpServletResponse resp) {
+    public RsData<NewAccessRequest> refresh(HttpServletRequest request, HttpServletResponse resp) {
         String token = extractTokenFromHeader(request);
 
         String username = jwtProvider.getUsername(token);
+        String newRefreshToken = jwtUtil.genAccessToken(username);
         String newAccessToken = jwtUtil.genAccessToken(username);
 
         if (newAccessToken == null) {
@@ -39,16 +42,24 @@ public class JwtController {
         }
         // 새로운 토큰을 응답 헤더에 추가
         resp.addHeader("Authorization", "Bearer " + newAccessToken);
+        resp.addHeader("Refresh-Token",  newRefreshToken);
 
-        return RsData.of("S-11", "새로운 Access 토큰이 발급되었습니다.", new newAccessRequest(newAccessToken));
+        return RsData.of("S-11", "새로운 Access 토큰이 발급되었습니다.", new NewAccessRequest(newAccessToken, newRefreshToken));
     }
 
     // 토큰을 통해 유저 아이디를 가져오는 구문
+    @AllArgsConstructor
+    @Getter
+    public static class CheckedUsernameResponse {
+        private String username;
+    }
+
     @PostMapping(value = "/verify-token", consumes = APPLICATION_JSON_VALUE)
-    public String verifyToken(HttpServletRequest request) {
+    public RsData<CheckedUsernameResponse> verifyToken(HttpServletRequest request) {
         String token = extractTokenFromHeader(request);
         String username = jwtProvider.getUsername(token);
-        return username;
+
+        return RsData.of("S-12", "유저 아이디 입니다.", new CheckedUsernameResponse(username));
     }
 
     public String extractTokenFromHeader(HttpServletRequest request) {
