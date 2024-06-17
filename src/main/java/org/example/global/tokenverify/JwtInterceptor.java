@@ -23,7 +23,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         // 쿠키에서 토큰을 가져옵니다.
         Cookie[] cookies = request.getCookies();
-        String token = null;
+        String token = request.getHeader("Authorization");
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {

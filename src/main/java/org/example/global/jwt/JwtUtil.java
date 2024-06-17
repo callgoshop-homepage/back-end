@@ -38,7 +38,7 @@ public class JwtUtil {
 
         if (memberDto == null) return null;
 
-        return jwtProvider.genToken(memberDto.toClaims(), 60 * 10);
+        return jwtProvider.genToken(memberDto.toClaims(), 12);
     }
 
     public String genRefreshToken(String username) {
@@ -53,7 +53,7 @@ public class JwtUtil {
 
         if (memberDto == null) return null;
 
-        return jwtProvider.genToken(memberDto.toClaims(), 60 * 60 * 2);
+        return jwtProvider.genToken(memberDto.toClaims(), 10);
     }
 
     //    토큰으로 사용자 정보 추출해서 SecurityUser객체를 생성하는 구문
