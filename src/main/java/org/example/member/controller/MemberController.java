@@ -1,5 +1,6 @@
 package org.example.member.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -8,24 +9,27 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.example.global.jwt.JwtProvider;
 import org.example.global.jwt.JwtUtil;
 import org.example.global.rq.Rq;
 import org.example.global.rs.RsData;
 import org.example.member.entity.Member;
 import org.example.member.service.MemberService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.example.token.controller.JwtController;
+import org.hibernate.validator.internal.engine.messageinterpolation.parser.TokenCollector;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.util.MimeTypeUtils.ALL_VALUE;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/member", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 public class MemberController {
 
+    private final JwtController jwtController;
     private final MemberService memberService;
+    private final JwtProvider jwtProvider;
     private final JwtUtil jwtUtil;
 
     //    회원가입 하는 구문
@@ -95,9 +99,57 @@ public class MemberController {
             System.out.println(accessToken);
             System.out.println(refreshToken);
 
-            return RsData.of("S-2", "토큰이 생성되었습니다.", new LoginResponse(accessToken, refreshToken, booleanMember));
+            return RsData.of("S-2", "로그인이 완료되었습니다.", new LoginResponse(accessToken, refreshToken, booleanMember));
         } else {
             return RsData.of("일치하지 않음", null);
         }
+    }
+
+    //    내 정보 불러오는 구문
+    @AllArgsConstructor
+    @Getter
+    public static class MyPageResponse {
+        private final Member member;
+    }
+
+    @GetMapping(value = "/my-page", consumes = ALL_VALUE)
+    public RsData<MyPageResponse> mypage(HttpServletRequest request) {
+        String token = jwtController.extractTokenFromHeader(request);
+        String username = jwtProvider.getUsername(token);
+
+        if (username == null) {
+            // 사용자가 인증되지 않은 경우 처리
+            return RsData.of("E-1", "사용자가 인증되지 않았습니다.", null);
+        }
+
+        Member member = memberService.findByUsername(username).orElse(null);
+
+        return RsData.of(
+                "S-3",
+                "내 정보 조회성공",
+                new MyPageResponse(member)
+        );
+    }
+
+    //    내 정보 수정하는 구문
+    @AllArgsConstructor
+    @Getter
+    public static class ModifyResponse {
+        private final Member member;
+        private final String newAccessToken;
+        private final String newRefreshToken;
+    }
+
+    @PostMapping(value = "/modify", consumes = ALL_VALUE)
+    public RsData<ModifyResponse> modify(@Valid @RequestBody JoinMemberRequest joinMemberRequest, HttpServletResponse resp) {
+        Member member = memberService.modify(joinMemberRequest.getUsername(), joinMemberRequest.getName(), joinMemberRequest.getPhoneNumber(), joinMemberRequest.getPassword());
+        // 수정된 회원 정보로 다시 로그인하여 새로운 토큰 발급
+        String accessToken = jwtUtil.genAccessToken(joinMemberRequest.getUsername());
+        String refreshToken = jwtUtil.genRefreshToken(joinMemberRequest.getUsername());
+
+        resp.addHeader("Authorization", "Bearer " + accessToken);
+        resp.addHeader("Refresh-Token", refreshToken);
+
+        return RsData.of("S-3", "성공", new ModifyResponse(member, accessToken, refreshToken));
     }
 }

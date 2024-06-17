@@ -59,4 +59,17 @@ public class MemberService {
 
         return member;
     }
+
+//    회원 수정하는 구문
+    public Member modify (String username, String name, String phoneNumber, String password) {
+        Member member = memberRepository.findByUsername(username) //유저 찾기
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
+
+        member.setName(name);
+        member.setPassword(passwordEncoder.encode(password));
+        member.setPhoneNumber(phoneNumber);
+
+        memberRepository.save(member);
+        return member;
+    }
 }
