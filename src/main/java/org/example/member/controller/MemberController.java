@@ -76,13 +76,12 @@ public class MemberController {
         //        아이디
         @NotNull(message = "아이디는 필수입니다.")
         public String username;
-        @NotNull(message = "비밀번호는 6자리 이상 25자리 이하이며, 영어, 숫자, 특수문자를 포함해야 합니다.")
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=[\\]{};':\"\\\\|,.<>/?]).{6,25}$")
+        @NotNull(message = "비밀번호는 필수입니다.")
         public String password;
     }
 
     @PostMapping(value = "/login", consumes = APPLICATION_JSON_VALUE)
-    public RsData<LoginResponse> Login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse resp) throws Exception {
+    public RsData<LoginResponse> Login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse resp) {
         boolean checkedLogin = memberService.memberCheck(loginRequest.getUsername(), loginRequest.getPassword());
         Member member = memberService.booleanMember(loginRequest.getUsername());
         int booleanMember = member.getIsEnabled();
