@@ -27,7 +27,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
-    private final Rq rq;
 
     //    회원가입 하는 구문
     @Data
