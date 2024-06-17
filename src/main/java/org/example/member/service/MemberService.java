@@ -37,7 +37,15 @@ public class MemberService {
             return false;
         }
     }
-//    회원가입 하는 구문
+
+    //    승인 요청됐는지 확인하는 구문
+    public Member booleanMember(String username) {
+        Member member = memberRepository.findByUsername(username).orElse(null);
+
+        return member;
+    }
+
+    //    회원가입 하는 구문
     public Member joinMember(String email, String username, String password, String name, String phoneNumber) {
         Member member = Member.builder()
                 .email(email)
