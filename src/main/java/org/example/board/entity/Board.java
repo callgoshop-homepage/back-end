@@ -13,6 +13,7 @@ import org.example.product.entity.Product;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
+@Data
 public class Board extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -16,6 +16,14 @@ spring:
         format_sql: true
         use_sql_comments: true
         default_batch_fetch_size: 100
+  servlet:
+    multipart:
+      max-file-size: 512MB
+      max-request-size: 512MB
+      enabled: true
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
 logging:
   level:
     org.hibernate.SQL: DEBUG

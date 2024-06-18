@@ -20,7 +20,7 @@ public class ProductService {
     private final ProductRepository productRepository;
 
 
-    public Product createProduct(List<MultipartFile> files, String productName, String price, Long productNumber, String type , String parcel) throws Exception {
+    public Product createProduct(List<MultipartFile> files, String productName, Long price, Long productNumber, String type , String parcel) throws Exception {
         List<Board> boards = boardService.addBoard(files);
 
         Product product = Product.builder()
@@ -38,5 +38,13 @@ public class ProductService {
 
         this.productRepository.save(product);
         return product;
+    }
+
+//    상품 종류에 따른 리스트
+    public List<Product> findByType(String type) {
+        if (type == null || type.isEmpty()) {
+            return this.productRepository.findAll();
+        }
+        return this.productRepository.findByType(type);
     }
 }

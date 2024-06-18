@@ -22,7 +22,7 @@ public class Product extends BaseEntity {
 
     private String productName;
 
-    private String price;
+    private Long price;
 
     private Long productNumber;
 
