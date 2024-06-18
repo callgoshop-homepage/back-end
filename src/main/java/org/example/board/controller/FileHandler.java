@@ -1,6 +1,7 @@
 package org.example.board.controller;
 
 import org.example.board.entity.Board;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,9 @@ import java.util.List;
 
 @Component
 public class FileHandler {
+    @Value("${myapp.image-path}")
+    private String imagePath;
+
     public List<Board> parseFileInfo(List<MultipartFile> multipartFiles) throws Exception {
 
         // 반환을 할 파일 리스트
@@ -32,7 +36,8 @@ public class FileHandler {
 //        mac은 역슬래쉬 아님 슬래쉬 한개 / window 는 역슬래쉬 \\두개
 
         // 경로를 지정하고 그곳에다가 저장
-        String path = "frontapp/static/img/";
+//        /Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img
+        String path = absolutePath + imagePath;
 //        current_date 일단 생략
         File file = new File(path);
         // 저장할 위치의 디렉토리가 존지하지 않을 경우
