@@ -3,9 +3,11 @@ package org.example.member.service;
 import lombok.RequiredArgsConstructor;
 import org.example.member.entity.Member;
 import org.example.member.repository.MemberRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,5 +60,23 @@ public class MemberService {
         this.memberRepository.save(member);
 
         return member;
+    }
+
+//    회원 수정하는 구문
+    public Member modify (String username, String name, String phoneNumber, String password) {
+        Member member = memberRepository.findByUsername(username) //유저 찾기
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
+
+        member.setName(name);
+        member.setPassword(passwordEncoder.encode(password));
+        member.setPhoneNumber(phoneNumber);
+
+        memberRepository.save(member);
+        return member;
+    }
+
+    //    유저 리스트를 불러오는 구문
+    public List<Member> memberList() {
+        return memberRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
     }
 }
