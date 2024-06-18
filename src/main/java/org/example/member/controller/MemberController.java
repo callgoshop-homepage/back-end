@@ -17,7 +17,10 @@ import org.example.member.entity.Member;
 import org.example.member.service.MemberService;
 import org.example.token.controller.JwtController;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.TokenCollector;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.util.MimeTypeUtils.ALL_VALUE;
@@ -151,5 +154,19 @@ public class MemberController {
         resp.addHeader("Refresh-Token", refreshToken);
 
         return RsData.of("S-3", "성공", new ModifyResponse(member, accessToken, refreshToken));
+    }
+
+    //    회원 리스트를 불러오는 구문
+    @AllArgsConstructor
+    @Getter
+    public static class MemberListResponse {
+        private List<Member> memberList;
+    }
+
+    @GetMapping(value = "/list", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public RsData<MemberListResponse> franchiseList() {
+        List<Member> memberList = memberService.memberList();
+
+        return RsData.of("S-4", "리스트 조회 성공", new MemberListResponse(memberList));
     }
 }
