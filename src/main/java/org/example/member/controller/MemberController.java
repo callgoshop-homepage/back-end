@@ -9,11 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.example.email.service.EmailService;
 import org.example.global.jwt.JwtProvider;
 import org.example.global.jwt.JwtUtil;
 import org.example.global.rq.Rq;
 import org.example.global.rs.RsData;
 import org.example.member.entity.Member;
+import org.example.member.repository.MemberRepository;
 import org.example.member.service.MemberService;
 import org.example.token.controller.JwtController;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.TokenCollector;
@@ -21,6 +23,7 @@ import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.util.MimeTypeUtils.ALL_VALUE;
@@ -32,8 +35,10 @@ public class MemberController {
 
     private final JwtController jwtController;
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final JwtUtil jwtUtil;
+    private final EmailService emailService;
 
     //    회원가입 하는 구문
     @Data
@@ -103,6 +108,8 @@ public class MemberController {
             System.out.println(refreshToken);
 
             return RsData.of("S-2", "로그인이 완료되었습니다.", new LoginResponse(accessToken, refreshToken, booleanMember));
+        } else if (checkedLogin && booleanMember == 0) {
+            return RsData.of("S-43", "승인처리 진행중", null);
         } else {
             return RsData.of("S-44", "로그인 실패", null);
         }
@@ -122,13 +129,13 @@ public class MemberController {
 
         if (username == null) {
             // 사용자가 인증되지 않은 경우 처리
-            return RsData.of("E-1", "사용자가 인증되지 않았습니다.", null);
+            return RsData.of("S-41", "사용자가 인증되지 않았습니다.", null);
         }
 
         Member member = memberService.findByUsername(username).orElse(null);
 
         return RsData.of(
-                "S-3",
+                "S-5",
                 "내 정보 조회성공",
                 new MyPageResponse(member)
         );
@@ -177,4 +184,71 @@ public class MemberController {
 
         return RsData.of("S-4", "리스트 조회 성공", new MemberListResponse(memberList));
     }
+
+    //    회원 승인처리하는 구문
+    @Data
+    public static class MemberApproveRequest {
+        private String username;
+    }
+
+    @PutMapping(value = "/approve", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public RsData<?> memberApprove(@Valid @RequestBody MemberApproveRequest memberApproveRequest) {
+
+        Optional<Member> member = this.memberService.findByUsername(memberApproveRequest.getUsername());
+        Member member1 = member.orElse(null);
+
+        if (member1 != null && member1.getIsEnabled() == 0) {
+            member1.setIsEnabled(1);
+
+            memberRepository.save(member1);
+        } else if (member1 != null && member1.getIsEnabled() == 1) {
+            member1.setIsEnabled(0);
+
+            memberRepository.save(member1);
+        }
+
+        return RsData.of("S-6", "승인 완료", null);
+    }
+
+    //    회원 아이디 찾는 구문
+    @Data
+    public static class FindIdRequest {
+        private String name;
+        private String email;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class FindIdResponse {
+        private final String username;
+    }
+
+    @PostMapping(value = "/findId", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public RsData<FindIdResponse> findUsername(@Valid @RequestBody FindIdRequest findIdRequest) {
+        Member member = memberService.findByNameAndEmail(findIdRequest.getName(), findIdRequest.getEmail());
+
+        if (member.getUsername() != null) {
+            return RsData.of("S-7", "아이디를 찾았습니다.", new FindIdResponse(member.getUsername()));
+        } else {
+            return RsData.of("S-42", "해당 회원이 존재하지 않습니다.", null);
+        }
+    }
+
+    //    회원 비밀번호 찾는 구문
+    @Data
+    public static class FindPasswordRequest {
+        private String name;
+        private String email;
+        private String username;
+    }
+
+//    @PostMapping(value = "/findPassword", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
+//    public RsData<?> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest) {
+//        Member member = memberService.findByNameAndEmailAndUsername(findPasswordRequest.getName(), findPasswordRequest.getEmail(), findPasswordRequest.getUsername());
+//
+//        if (member != null) {
+//            String PW = emailService.PWSearch(findPasswordRequest.getEmail());
+//        }
+//
+//    }
 }

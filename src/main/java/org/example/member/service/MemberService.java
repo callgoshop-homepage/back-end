@@ -1,6 +1,7 @@
 package org.example.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.member.dto.MemberDto;
 import org.example.member.entity.Member;
 import org.example.member.repository.MemberRepository;
 import org.springframework.data.domain.Sort;
@@ -83,5 +84,25 @@ public class MemberService {
     //    유저 리스트를 불러오는 구문
     public List<Member> memberList() {
         return memberRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+    }
+
+    //    아이디, 비밀번호 찾기 구문
+    public Member findByNameAndEmail(String name, String email) {
+        Optional<Member> username = memberRepository.findByNameAndEmail(name, email);
+
+        return username.orElse(null);
+    }
+
+    public Member findByNameAndEmailAndUsername(String name, String email, String username) {
+        Optional<Member> result = memberRepository.findByNameAndEmailAndUsername(name, email, username);
+        return result.orElse(null);
+    }
+
+    public void PasswordModify (Member member, String pw) {
+        Member memberModify = Member.builder()
+                .password(passwordEncoder.encode(pw))
+                .build();
+
+        memberRepository.save(memberModify);
     }
 }

@@ -3,12 +3,14 @@ package org.example.product.service;
 import lombok.RequiredArgsConstructor;
 import org.example.board.entity.Board;
 import org.example.board.service.BoardService;
+import org.example.member.entity.Member;
 import org.example.product.entity.Product;
 import org.example.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -52,4 +54,6 @@ public class ProductService {
     public Product findById(Long id) {
         return this.productRepository.findById(id).orElse(null);
     }
+
+
 }
