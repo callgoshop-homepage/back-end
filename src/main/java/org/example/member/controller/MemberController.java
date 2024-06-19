@@ -104,7 +104,7 @@ public class MemberController {
 
             return RsData.of("S-2", "로그인이 완료되었습니다.", new LoginResponse(accessToken, refreshToken, booleanMember));
         } else {
-            return RsData.of("일치하지 않음", null);
+            return RsData.of("S-44", "로그인 실패", null);
         }
     }
 
