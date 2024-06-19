@@ -47,4 +47,9 @@ public class ProductService {
         }
         return this.productRepository.findByType(type);
     }
+
+//    id를 통해서 상품을 찾는 구문
+    public Product findById(Long id) {
+        return this.productRepository.findById(id).orElse(null);
+    }
 }
