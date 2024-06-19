@@ -242,13 +242,16 @@ public class MemberController {
         private String username;
     }
 
-//    @PostMapping(value = "/findPassword", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
-//    public RsData<?> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest) {
-//        Member member = memberService.findByNameAndEmailAndUsername(findPasswordRequest.getName(), findPasswordRequest.getEmail(), findPasswordRequest.getUsername());
-//
-//        if (member != null) {
-//            String PW = emailService.PWSearch(findPasswordRequest.getEmail());
-//        }
-//
-//    }
+    @PostMapping(value = "/findPassword", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public RsData<?> findPassword(@Valid @RequestBody FindPasswordRequest findPasswordRequest) {
+        Member member = memberService.findByNameAndEmailAndUsername(findPasswordRequest.getName(), findPasswordRequest.getEmail(), findPasswordRequest.getUsername());
+
+        if (member != null) {
+            String password = emailService.PWSearch(findPasswordRequest.getEmail());
+            memberService.PasswordModify(member, password);
+            return RsData.of("S-8", "임시 비밀번호를 발송하였습니다.", null);
+        } else {
+            return RsData.of("S-45", "해당 회원이 존재하지 않습니다.", null);
+        }
+    }
 }

@@ -41,7 +41,6 @@ public class EmailService {
             mailSender.send(message);
             return str;
 
-
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }

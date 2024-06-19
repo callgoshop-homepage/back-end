@@ -98,9 +98,14 @@ public class MemberService {
         return result.orElse(null);
     }
 
-    public void PasswordModify (Member member, String pw) {
+    public void PasswordModify (Member member, String password) {
         Member memberModify = Member.builder()
-                .password(passwordEncoder.encode(pw))
+                .id(member.getId())
+                .name(member.getName())
+                .username(member.getUsername())
+                .password(passwordEncoder.encode(password))
+                .email(member.getEmail())
+                .phoneNumber(member.getPhoneNumber())
                 .build();
 
         memberRepository.save(memberModify);
