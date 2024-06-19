@@ -2,5 +2,3 @@ spring:
   profiles:
     active: prod
     include: secret
-myapp:
-  image-path: file:/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/

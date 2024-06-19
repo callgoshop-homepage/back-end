@@ -1,5 +1,6 @@
 package org.example.board.controller;
 
+import jakarta.annotation.PostConstruct;
 import org.example.board.entity.Board;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,8 +15,6 @@ import java.util.List;
 
 @Component
 public class FileHandler {
-    @Value("${myapp.image-path}")
-    private String imagePath;
 
     public List<Board> parseFileInfo(List<MultipartFile> multipartFiles) throws Exception {
 
@@ -37,7 +36,7 @@ public class FileHandler {
 
         // 경로를 지정하고 그곳에다가 저장
 //        /Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img
-        String path = absolutePath + imagePath;
+        String path = "/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/";
 //        current_date 일단 생략
         File file = new File(path);
         // 저장할 위치의 디렉토리가 존지하지 않을 경우
@@ -74,7 +73,7 @@ public class FileHandler {
                 fileList.add(board);
 
                 // 저장된 파일로 변경하여 이를 보여주기 위함
-                file = new File(absolutePath + path + "/" + new_file_name);
+                file = new File(path + "/" + new_file_name);
                 multipartFile.transferTo(file);
             }
         }

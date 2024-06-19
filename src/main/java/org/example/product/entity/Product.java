@@ -1,5 +1,6 @@
 package org.example.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -22,7 +23,7 @@ public class Product extends BaseEntity {
 
     private String productName;
 
-    private String price;
+    private Long price;
 
     private Long productNumber;
 
@@ -32,6 +33,8 @@ public class Product extends BaseEntity {
     //    택배사
     private String parcel;
 
+//    @JsonManagedReference는 순환참조 에러를 해결하기 위한 방법
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Board> boards;
 }
