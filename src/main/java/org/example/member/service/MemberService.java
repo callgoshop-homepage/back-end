@@ -67,9 +67,14 @@ public class MemberService {
         Member member = memberRepository.findByUsername(username) //유저 찾기
                 .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
 
-        member.setName(name);
-        member.setPassword(passwordEncoder.encode(password));
-        member.setPhoneNumber(phoneNumber);
+        if (password == null || password.isEmpty()) {
+            member.setName(name);
+            member.setPhoneNumber(phoneNumber);
+        } else {
+            member.setName(name);
+            member.setPassword(passwordEncoder.encode(password));
+            member.setPhoneNumber(phoneNumber);
+        }
 
         memberRepository.save(member);
         return member;
