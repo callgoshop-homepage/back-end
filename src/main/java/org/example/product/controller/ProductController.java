@@ -58,4 +58,19 @@ public class ProductController {
         List<Product> productList = this.productService.findByType(productsRequest.getType());
         return RsData.of("S-11", "상품 조회 성공", new ProductsListResponse(productList));
     }
+
+//    상품을 클릭했을 때, 디테일로 들어가는 구문
+    @AllArgsConstructor
+    @Getter
+    public static class detailResponse {
+        private final Product product;
+    }
+
+    @GetMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
+    public RsData<detailResponse> productDetail(@PathVariable(value = "id") Long id) {
+
+        Product product = productService.findById(id);
+
+        return RsData.of("S-8", "성공", new detailResponse(product));
+    }
 }
