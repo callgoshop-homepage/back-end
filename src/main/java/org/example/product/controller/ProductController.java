@@ -17,7 +17,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping( "/api/v1/product")
+@RequestMapping(value = "/api/v1/product", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 public class ProductController {
 
     private final ProductService productService;
@@ -29,7 +29,7 @@ public class ProductController {
         private final Product product;
     }
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public RsData<ProductResponse> create(@RequestParam("files") List<MultipartFile> files,
                                           @RequestParam("productName") String productName,
                                           @RequestParam("price") Long price,

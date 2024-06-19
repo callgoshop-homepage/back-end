@@ -1,5 +1,6 @@
 package org.example.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -31,7 +32,9 @@ public class Board extends BaseEntity {
 
     private long fileSize;
 
+//    @JsonBackReference는 순환참조 에러를 해결하기 위한 방법
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     private Product product;
 }
