@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.example.board.entity.Board;
+import org.example.cart.entity.CartItem;
 import org.example.global.baseentity.BaseEntity;
+import org.example.cart.entity.Cart;
 
 import java.util.List;
 
@@ -37,4 +39,8 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Board> boards;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<CartItem> cartItems;
 }
