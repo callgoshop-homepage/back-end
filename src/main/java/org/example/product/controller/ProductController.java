@@ -29,15 +29,24 @@ public class ProductController {
         private final Product product;
     }
 
+    @Data
+    public class ProductOptionRequest {
+        private String optionName;
+        private Long optionPrice;
+    }
+
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public RsData<ProductResponse> create(@RequestParam("files") List<MultipartFile> files,
+                                          @RequestParam("detailfiles") List<MultipartFile> detailfiles,
                                           @RequestParam("productName") String productName,
                                           @RequestParam("price") Long price,
                                           @RequestParam("productNumber") Long productNumber,
                                           @RequestParam("type") String type,
-                                          @RequestParam("parcel") String parcel) throws Exception {
+                                          @RequestParam("parcel") String parcel,
+                                          @RequestParam("optionNames") List<String> optionNames,
+                                          @RequestParam("optionPrices") List<Long> optionPrices) throws Exception {
 
-        Product product = productService.createProduct(files, productName, price, productNumber, type, parcel);
+        Product product = productService.createProduct(files, detailfiles, optionNames, optionPrices, productName, price, productNumber, type, parcel);
         return RsData.of("S-10", "상품 등록 성공", new ProductResponse(product));
     }
 
