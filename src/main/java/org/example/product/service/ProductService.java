@@ -2,15 +2,22 @@ package org.example.product.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.board.entity.Board;
+import org.example.board.entity.DetailBoard;
 import org.example.board.service.BoardService;
+import org.example.board.service.DetailBoardService;
 import org.example.member.entity.Member;
+import org.example.product.controller.ProductController;
 import org.example.product.entity.Product;
+import org.example.product.entity.ProductOption;
+import org.example.product.repository.ProductOptionRepository;
 import org.example.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -18,15 +25,29 @@ import java.util.Optional;
 public class ProductService {
 
     private final BoardService boardService;
+    private final DetailBoardService detailBoardService;
 //    제품 등록 구문
     private final ProductRepository productRepository;
+    private final ProductOptionRepository productOptionRepository;
 
 
-    public Product createProduct(List<MultipartFile> files, String productName, Long price, Long productNumber, String type , String parcel) throws Exception {
+    public Product createProduct(List<MultipartFile> files, List<MultipartFile> detailfiles, List<String> optionNames, List<Long> optionPrices, String productName, Long price, Long productNumber, String type , String parcel) throws Exception {
         List<Board> boards = boardService.addBoard(files);
+        List<DetailBoard> detailBoards = detailBoardService.addDetailBoard(detailfiles);
+
+        List<ProductOption> productOptions = new ArrayList<>();
+        for (int i = 0; i < optionNames.size(); i++) {
+            ProductOption option = ProductOption.builder()
+                    .optionName(optionNames.get(i))
+                    .optionPrice(optionPrices.get(i))
+                    .build();
+            productOptions.add(option);
+        }
 
         Product product = Product.builder()
                 .boards(boards)
+                .detailBoards(detailBoards)
+                .productOption(productOptions.toString())
                 .productName(productName)
                 .price(price)
                 .productNumber(productNumber)
@@ -38,7 +59,8 @@ public class ProductService {
             board.setProduct(product);
         }
 
-        this.productRepository.save(product);
+        productRepository.save(product);
+
         return product;
     }
 
