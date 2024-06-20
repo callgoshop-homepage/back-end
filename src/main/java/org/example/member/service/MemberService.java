@@ -104,6 +104,7 @@ public class MemberService {
                 .name(member.getName())
                 .username(member.getUsername())
                 .password(passwordEncoder.encode(password))
+                .isEnabled(member.getIsEnabled())
                 .email(member.getEmail())
                 .phoneNumber(member.getPhoneNumber())
                 .build();
