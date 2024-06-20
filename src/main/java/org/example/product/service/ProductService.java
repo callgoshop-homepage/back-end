@@ -1,5 +1,6 @@
 package org.example.product.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.example.board.entity.Board;
 import org.example.board.entity.DetailBoard;
@@ -31,9 +32,12 @@ public class ProductService {
     private final ProductOptionRepository productOptionRepository;
 
 
-    public Product createProduct(List<MultipartFile> files, List<MultipartFile> detailfiles, List<ProductController.ProductOptionRequest> optionRequests, String productName, Long price, Long productNumber, String type , String parcel) throws Exception {
+    public Product createProduct(List<MultipartFile> files, List<MultipartFile> detailfiles, String optionsJson, String productName, Long price, Long productNumber, String type , String parcel) throws Exception {
         List<Board> boards = boardService.addBoard(files);
         List<DetailBoard> detailBoards = detailBoardService.addDetailBoard(detailfiles);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<ProductController.ProductOptionRequest> optionRequests = objectMapper.readValue(optionsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, ProductController.ProductOptionRequest.class));
 
         List<ProductOption> productOptions = new ArrayList<>();
         for (ProductController.ProductOptionRequest optionRequest : optionRequests) {
