@@ -43,10 +43,9 @@ public class ProductController {
                                           @RequestParam("productNumber") Long productNumber,
                                           @RequestParam("type") String type,
                                           @RequestParam("parcel") String parcel,
-                                          @RequestParam("optionNames") List<String> optionNames,
-                                          @RequestParam("optionPrices") List<Long> optionPrices) throws Exception {
+                                          @RequestBody List<ProductOptionRequest> optionRequests) throws Exception {
 
-        Product product = productService.createProduct(files, detailfiles, optionNames, optionPrices, productName, price, productNumber, type, parcel);
+        Product product = productService.createProduct(files, detailfiles, optionRequests, productName, price, productNumber, type, parcel);
         return RsData.of("S-10", "상품 등록 성공", new ProductResponse(product));
     }
 
