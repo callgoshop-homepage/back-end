@@ -31,15 +31,15 @@ public class ProductService {
     private final ProductOptionRepository productOptionRepository;
 
 
-    public Product createProduct(List<MultipartFile> files, List<MultipartFile> detailfiles, List<String> optionNames, List<Long> optionPrices, String productName, Long price, Long productNumber, String type , String parcel) throws Exception {
+    public Product createProduct(List<MultipartFile> files, List<MultipartFile> detailfiles, List<ProductController.ProductOptionRequest> optionRequests, String productName, Long price, Long productNumber, String type , String parcel) throws Exception {
         List<Board> boards = boardService.addBoard(files);
         List<DetailBoard> detailBoards = detailBoardService.addDetailBoard(detailfiles);
 
         List<ProductOption> productOptions = new ArrayList<>();
-        for (int i = 0; i < optionNames.size(); i++) {
+        for (ProductController.ProductOptionRequest optionRequest : optionRequests) {
             ProductOption option = ProductOption.builder()
-                    .optionName(optionNames.get(i))
-                    .optionPrice(optionPrices.get(i))
+                    .optionName(optionRequest.getOptionName())
+                    .optionPrice(optionRequest.getOptionPrice())
                     .build();
             productOptions.add(option);
         }
