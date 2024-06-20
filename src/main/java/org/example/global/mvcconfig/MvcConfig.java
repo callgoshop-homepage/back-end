@@ -35,7 +35,9 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/api/v1/member/join",
-                        "/api/v1/member/login"
+                        "/api/v1/member/login",
+                        "/api/v1/member/findId",
+                        "/api/v1/member/findPassword"
                 );  // 이 인터셉터를 모든 경로에 적용합니다.
     }
 

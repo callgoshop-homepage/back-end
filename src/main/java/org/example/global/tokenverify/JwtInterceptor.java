@@ -33,6 +33,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                 }
             }
         }
+
         if (token != null) {
             try {
                 jwtProvider.verify(token);

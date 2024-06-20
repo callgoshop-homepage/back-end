@@ -35,11 +35,7 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin.disable()) // 폼 로그인 방식 끄기
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(STATELESS)
-                ) // 세션끄기
-//                .addFilterBefore(
-//                        jwtAuthenticationFilter, // 엑세스 토큰으로 부터 로그인 처리
-//                        UsernamePasswordAuthenticationFilter.class
-//                )
+                )
       ;
 
         return http.build();
