@@ -1,5 +1,6 @@
 package org.example.product.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -29,12 +30,6 @@ public class ProductController {
         private final Product product;
     }
 
-    @Data
-    public class ProductOptionRequest {
-        private String optionName;
-        private Long optionPrice;
-    }
-
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public RsData<ProductResponse> create(@RequestParam("files") List<MultipartFile> files,
                                           @RequestParam("detailfiles") List<MultipartFile> detailfiles,
@@ -45,7 +40,10 @@ public class ProductController {
                                           @RequestParam("parcel") String parcel,
                                           @RequestParam("options") String optionsJson) throws Exception {
 
-        Product product = productService.createProduct(files, detailfiles, optionsJson, productName, price, productNumber, type, parcel);
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<ProductOptionRequest> optionRequests = objectMapper.readValue(optionsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, ProductOptionRequest.class));
+
+        Product product = productService.createProduct(files, detailfiles, optionRequests, productName, price, productNumber, type, parcel);
         return RsData.of("S-10", "상품 등록 성공", new ProductResponse(product));
     }
 
