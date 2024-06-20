@@ -13,9 +13,10 @@ public class CartItemDto extends BaseEntity {
     private Long id;
     private Long productId;
     private String productName;
-    private String productDescription;
     private double productPrice;
     private int count;
     private double totalPrice;
+    private String optionName;
+    private double optionPrice;
 
 }

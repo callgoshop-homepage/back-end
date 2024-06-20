@@ -8,6 +8,7 @@ import org.example.board.service.BoardService;
 import org.example.board.service.DetailBoardService;
 import org.example.member.entity.Member;
 import org.example.product.controller.ProductController;
+import org.example.product.controller.ProductOptionRequest;
 import org.example.product.entity.Product;
 import org.example.product.entity.ProductOption;
 import org.example.product.repository.ProductOptionRepository;
@@ -31,16 +32,12 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
 
-
-    public Product createProduct(List<MultipartFile> files, List<MultipartFile> detailfiles, String optionsJson, String productName, Long price, Long productNumber, String type , String parcel) throws Exception {
+    public Product createProduct(List<MultipartFile> files, List<MultipartFile> detailfiles, List<ProductOptionRequest> optionRequests, String productName, Long price, Long productNumber, String type , String parcel) throws Exception {
         List<Board> boards = boardService.addBoard(files);
         List<DetailBoard> detailBoards = detailBoardService.addDetailBoard(detailfiles);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<ProductController.ProductOptionRequest> optionRequests = objectMapper.readValue(optionsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, ProductController.ProductOptionRequest.class));
-
         List<ProductOption> productOptions = new ArrayList<>();
-        for (ProductController.ProductOptionRequest optionRequest : optionRequests) {
+        for (ProductOptionRequest optionRequest : optionRequests) {
             ProductOption option = ProductOption.builder()
                     .optionName(optionRequest.getOptionName())
                     .optionPrice(optionRequest.getOptionPrice())
