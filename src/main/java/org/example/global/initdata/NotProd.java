@@ -26,8 +26,18 @@
 //                    .createDate(LocalDateTime.now())
 //                    .build();
 //
+//            Member admin2 = Member.builder()
+//                    .name("홍길동")
+//                    .username("test1")
+//                    .email("gusrudchl12@gmail.com")
+//                    .password(passwordEncoder.encode("test1"))
+//                    .phoneNumber("01012345679")
+//                    .isEnabled(1)
+//                    .createDate(LocalDateTime.now())
+//                    .build();
 //
 //            memberRepository.save(admin);
+//            memberRepository.save(admin2);
 //        };
 //    }
 //}

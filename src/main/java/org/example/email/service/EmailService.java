@@ -44,6 +44,5 @@ public class EmailService {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
