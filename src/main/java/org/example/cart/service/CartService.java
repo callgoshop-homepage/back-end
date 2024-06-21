@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +50,6 @@ public class CartService {
             // CartItem을 생성하거나 기존 항목을 업데이트합니다.
             CartItem cartItem = cartItemRepository.findByCartIdAndProductIdAndProductOptionId(cart.getId(), product.getId(), productOption.getId());
 
-            productOption.setCartItems(cartItems);
 
             if (cartItem != null) {
                 cartItem.addCount(optionCount.getCount());
@@ -66,8 +66,14 @@ public class CartService {
             cartItems.add(cartItem);
         }
 
-        cart.setCartItems(cartItems);
-        product.setCartItems(cartItems);
+
+        cart.getCartItems().addAll(cartItems);
+        product.getCartItems().addAll(cartItems);
+        for (ProductOption productOption : product.getProductOptions()) {
+            productOption.getCartItems().addAll(cartItems.stream()
+                    .filter(cartItem -> cartItem.getProductOption().equals(productOption))
+                    .collect(Collectors.toList()));
+        }
 
         return cartItems;
     }
