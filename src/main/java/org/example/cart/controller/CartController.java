@@ -19,6 +19,7 @@ import org.example.token.controller.JwtController;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.TokenCollector;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,13 +35,7 @@ public class CartController {
     private final JwtProvider jwtProvider;
     private final ProductRepository productRepository;
 
-//    장바구니에 상품 추가하는 구문
-    @Data
-    public static class AddCartRequest {
-        public Long productId;
-        public int count;
-        public Long optionId;
-    }
+    //    장바구니에 상품 추가하는 구문
 
     @AllArgsConstructor
     @Getter
@@ -56,39 +51,35 @@ public class CartController {
     }
 
     @PostMapping(value = "/add", consumes = APPLICATION_JSON_VALUE)
-    public RsData<AddCartResponse> addCart(HttpServletRequest request, @RequestBody AddCartRequest addCartRequest) {
+    public RsData<List<AddCartResponse>> addCart(HttpServletRequest request, @RequestBody AddCartRequest addCartRequest) {
         String token = jwtController.extractTokenFromHeader(request);
         String username = jwtProvider.getUsername(token);
 
-        // Product와 ProductOption을 찾습니다.
-        Product product = productRepository.findById(addCartRequest.getProductId())
-                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
-
-        ProductOption productOption = product.getProductOptions().stream()
-                .filter(option -> option.getId().equals(addCartRequest.getOptionId()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("옵션을 찾을 수 없습니다."));
-
-        CartItem cartItem = cartService.addCart(
+        List<CartItem> cartItems = cartService.addCart(
                 addCartRequest.getProductId(),
-                addCartRequest.getCount(),
-                addCartRequest.getOptionId(),
+                addCartRequest.getOptions(),
                 username
         );
 
-        double totalPrice = cartItem.getCount() * (product.getPrice() + productOption.getOptionPrice());
+        List<AddCartResponse> responses = new ArrayList<>();
+        for (CartItem cartItem : cartItems) {
+            Product product = cartItem.getProduct();
+            ProductOption productOption = cartItem.getProductOption();
+            double totalPrice = cartItem.getCount() * (product.getPrice() + productOption.getOptionPrice());
 
-        AddCartResponse response = new AddCartResponse(
-                cartItem.getId(),
-                product.getId(),
-                product.getProductName(),
-                productOption.getOptionName(),
-                cartItem.getCount(),
-                product.getPrice(),
-                productOption.getOptionPrice(),
-                totalPrice
-        );
-        return RsData.of("S-10" ,"장바구니 추가 성공", response);
+            AddCartResponse response = new AddCartResponse(
+                    cartItem.getId(),
+                    product.getId(),
+                    product.getProductName(),
+                    productOption.getOptionName(),
+                    cartItem.getCount(),
+                    product.getPrice(),
+                    productOption.getOptionPrice(),
+                    totalPrice
+            );
+            responses.add(response);
+        }
+        return RsData.of("S-10", "장바구니 추가 성공", responses);
     }
 
 //    로그인 유저의 장바구니 리스트 조회하는 구문
@@ -105,7 +96,7 @@ public class CartController {
     }
 
     @GetMapping(value = "/cartList", consumes = APPLICATION_JSON_VALUE)
-    public RsData<List<CartItemResponse>> cartList (HttpServletRequest request){
+    public RsData<List<CartItemResponse>> cartList(HttpServletRequest request) {
         String token = jwtController.extractTokenFromHeader(request);
         String username = jwtProvider.getUsername(token);
 
