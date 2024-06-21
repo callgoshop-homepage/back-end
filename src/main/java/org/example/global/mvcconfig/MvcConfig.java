@@ -44,6 +44,6 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/productregistration/**")
-                .addResourceLocations("file:///Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/");
+                .addResourceLocations("file:///Users/yunchaehyeon/Desktop/GitHub/svelte-flow2/front-app/static/img");
     }
 }
