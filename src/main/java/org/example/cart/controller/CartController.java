@@ -57,6 +57,7 @@ public class CartController {
 
         List<CartItem> cartItems = cartService.addCart(
                 addCartRequest.getProductId(),
+                addCartRequest.getCount(),
                 addCartRequest.getOptions(),
                 username
         );
@@ -65,16 +66,16 @@ public class CartController {
         for (CartItem cartItem : cartItems) {
             Product product = cartItem.getProduct();
             ProductOption productOption = cartItem.getProductOption();
-            double totalPrice = cartItem.getCount() * (product.getPrice() + productOption.getOptionPrice());
+            double totalPrice = cartItem.getCount() * (product.getPrice() + (productOption != null ? productOption.getOptionPrice() : 0));
 
             AddCartResponse response = new AddCartResponse(
                     cartItem.getId(),
                     product.getId(),
                     product.getProductName(),
-                    productOption.getOptionName(),
+                    productOption != null ? productOption.getOptionName() : "옵션 하늘나라 감",
                     cartItem.getCount(),
                     product.getPrice(),
-                    productOption.getOptionPrice(),
+                    productOption != null ? productOption.getOptionPrice() : 0,
                     totalPrice
             );
             responses.add(response);

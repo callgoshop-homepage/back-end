@@ -7,6 +7,7 @@ import java.util.List;
 @Data
 public class AddCartRequest {
     public Long productId;
+    private int count;
     private List<AddCartRequest.OptionCount> options;
 
     @Data
