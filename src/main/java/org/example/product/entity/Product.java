@@ -1,5 +1,6 @@
 package org.example.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,6 +10,7 @@ import org.example.board.entity.DetailBoard;
 import org.example.cart.entity.CartItem;
 import org.example.global.baseentity.BaseEntity;
 import org.example.cart.entity.Cart;
+import org.example.productorder.entity.ProductOrder;
 
 import java.util.List;
 
@@ -29,9 +31,6 @@ public class Product extends BaseEntity {
     private Long price;
 
     private Long productNumber;
-
-    //    상품 옵션
-    private String productOption;
 
     //    상품 종류
     private String type;
@@ -55,4 +54,9 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<ProductOption> productOptions;
+
+    @ManyToOne
+    @JoinColumn(name = "productOrder_id")
+    @JsonBackReference
+    private ProductOrder productOrder;
 }

@@ -1,14 +1,14 @@
 package org.example.productorder.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.example.global.baseentity.BaseEntity;
+import org.example.product.entity.Product;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,26 +22,14 @@ public class ProductOrder extends BaseEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-//    주문 번호
-    private Long productOrderNumber;
-
 //    주문 상태
-    private boolean productOrderStatus;
+    private String productOrderStatus;
 
-//    구매자 명
-    private String buyer;
-
-//    구매자 전화번호
-    private String buyerPhoneNumber;
-
-//    수취인 명
+//    수취인명
     private String reciever;
 
 //    승인 처리일
     private LocalDateTime approvalDate;
-
-//    발송 처리일
-    private LocalDateTime sendDate;
 
 //    배송 방법
     private String deliveryMethod;
@@ -52,21 +40,10 @@ public class ProductOrder extends BaseEntity {
 //    송장 번호
     private Long invoiceNumber;
 
-//    상품 명
-    private String productName;
-
-//    옵션 정보
-    private String optionInfo;
-
-//    수량
-    private int productQuantity;
-
-//    상품 가격
-    private Long productPrice;
-
-//    옵션 가격
-    private Long productOptionPrice;
-
 //    담당자
     private String manager;
+
+    @OneToMany(mappedBy = "productOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<Product> products;
 }

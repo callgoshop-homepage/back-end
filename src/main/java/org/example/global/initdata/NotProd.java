@@ -29,7 +29,7 @@
 //            Member admin2 = Member.builder()
 //                    .name("홍길동")
 //                    .username("test1")
-//                    .email("gusrudchl12@gmail.com")
+//                    .email("gusrudchl13@gmail.com")
 //                    .password(passwordEncoder.encode("test1"))
 //                    .phoneNumber("01012345679")
 //                    .isEnabled(1)

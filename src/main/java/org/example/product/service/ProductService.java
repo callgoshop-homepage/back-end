@@ -48,7 +48,7 @@ public class ProductService {
         Product product = Product.builder()
                 .boards(boards)
                 .detailBoards(detailBoards)
-                .productOption(productOptions.toString())
+                .productOptions(productOptions)
                 .productName(productName)
                 .price(price)
                 .productNumber(productNumber)
