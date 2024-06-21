@@ -33,7 +33,7 @@ public class ProductOption extends BaseEntity {
     @JsonBackReference
     private Product product;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "productOption", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<CartItem> cartItems;
 }
