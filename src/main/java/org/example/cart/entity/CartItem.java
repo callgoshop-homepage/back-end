@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.example.global.baseentity.BaseEntity;
 import org.example.product.entity.Product;
+import org.example.product.entity.ProductOption;
 
 @Getter
 @Setter
@@ -26,6 +27,10 @@ public class CartItem extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "product_option_id")
+    private ProductOption productOption;
 
     @Min(value = 1, message = "최소 1개 이상 담아주세요")
     private int count;

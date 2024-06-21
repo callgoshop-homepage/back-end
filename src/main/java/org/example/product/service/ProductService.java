@@ -60,6 +60,14 @@ public class ProductService {
             board.setProduct(product);
         }
 
+        for (DetailBoard detailBoard : detailBoards) {
+            detailBoard.setProduct(product);
+        }
+
+        for (ProductOption productOption : productOptions) {
+            productOption.setProduct(product);
+        }
+
         productRepository.save(product);
 
         return product;
