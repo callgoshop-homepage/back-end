@@ -1,5 +1,6 @@
 package org.example.productorder.dto;
 
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.example.global.baseentity.BaseEntity;
 
@@ -32,6 +33,13 @@ public class ProductOrderDto extends BaseEntity {
     //    송장 번호
     private Long invoiceNumber;
 
-    //    담당자
-    private String manager;
+    //    승인 상태
+    private int approveStatus;
+
+    //    수량
+    @Min(value = 1, message = "최소 1개 이상 담아주세요")
+    private int count;
+
+    // 총 금액
+    private Long totalPrice;
 }

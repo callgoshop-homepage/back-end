@@ -55,8 +55,7 @@ public class Product extends BaseEntity {
     @JsonManagedReference
     private List<ProductOption> productOptions;
 
-    @ManyToOne
-    @JoinColumn(name = "productOrder_id")
-    @JsonBackReference
-    private ProductOrder productOrder;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ProductOrder> productOrder;
 }

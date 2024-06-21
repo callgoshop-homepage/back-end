@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.example.global.baseentity.BaseEntity;
+import org.example.productorder.entity.ProductOrder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -58,4 +59,7 @@ public class Member extends BaseEntity {
     public boolean isAdmin() {
         return "gysoft".equals(username);
     }
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductOrder> productOrders;
 }

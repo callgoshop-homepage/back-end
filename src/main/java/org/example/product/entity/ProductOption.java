@@ -1,10 +1,14 @@
 package org.example.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.example.cart.entity.CartItem;
 import org.example.global.baseentity.BaseEntity;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,4 +32,8 @@ public class ProductOption extends BaseEntity {
     @JoinColumn(name = "product_id")
     @JsonBackReference
     private Product product;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<CartItem> cartItems;
 }
