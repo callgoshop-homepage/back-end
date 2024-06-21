@@ -2,15 +2,12 @@ package org.example.cart.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cart.controller.AddCartRequest;
-import org.example.cart.controller.CartController;
-import org.example.cart.dto.CartItemDto;
 import org.example.cart.entity.Cart;
 import org.example.cart.entity.CartItem;
 import org.example.cart.repository.CartItemRepository;
 import org.example.cart.repository.CartRepository;
 import org.example.member.entity.Member;
 import org.example.member.repository.MemberRepository;
-import org.example.member.service.MemberService;
 import org.example.product.entity.Product;
 import org.example.product.entity.ProductOption;
 import org.example.product.repository.ProductRepository;
@@ -18,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +49,8 @@ public class CartService {
             // CartItem을 생성하거나 기존 항목을 업데이트합니다.
             CartItem cartItem = cartItemRepository.findByCartIdAndProductIdAndProductOptionId(cart.getId(), product.getId(), productOption.getId());
 
+            productOption.setCartItems(cartItems);
+
             if (cartItem != null) {
                 cartItem.addCount(optionCount.getCount());
                 cartItemRepository.save(cartItem);
@@ -60,13 +58,17 @@ public class CartService {
                 cartItem = CartItem.builder()
                         .cart(cart)
                         .product(product)
-                        .productOption(productOption) // 옵션 정보 설정
+                        .productOption(productOption)
                         .count(optionCount.getCount())
                         .build();
                 cartItemRepository.save(cartItem);
             }
             cartItems.add(cartItem);
         }
+
+        cart.setCartItems(cartItems);
+        product.setCartItems(cartItems);
+
         return cartItems;
     }
 
