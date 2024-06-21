@@ -26,9 +26,8 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
 
-
     //    장바구니 추가하는 구문
-    public List<CartItem> addCart(Long productId, List<AddCartRequest.OptionCount> options, String username) {
+    public List<CartItem> addCart(Long productId, int count , List<AddCartRequest.OptionCount> options, String username) {
 
         Product product = productRepository.findById(productId).orElse(null);
         Member member = memberRepository.findByUsername(username).orElse(null);
@@ -41,40 +40,49 @@ public class CartService {
         }
 
         List<CartItem> cartItems = new ArrayList<>();
-        for (AddCartRequest.OptionCount optionCount : options) {
-            ProductOption productOption = product.getProductOptions().stream()
-                    .filter(option -> option.getId().equals(optionCount.getOptionId()))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("옵션을 찾을 수 없습니다."));
 
-            // CartItem을 생성하거나 기존 항목을 업데이트합니다.
-            CartItem cartItem = cartItemRepository.findByCartIdAndProductIdAndProductOptionId(cart.getId(), product.getId(), productOption.getId());
-
+        if (count > 0) {
+            // 옵션 없이 수량만으로 처리
+            CartItem cartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
 
             if (cartItem != null) {
-                cartItem.addCount(optionCount.getCount());
-                cartItemRepository.save(cartItem);
+                cartItem.addCount(count);
             } else {
                 cartItem = CartItem.builder()
                         .cart(cart)
                         .product(product)
-                        .productOption(productOption)
-                        .count(optionCount.getCount())
+                        .count(count)
                         .build();
                 cartItemRepository.save(cartItem);
             }
             cartItems.add(cartItem);
         }
 
+        if (options != null && !options.isEmpty()) {
+            for (AddCartRequest.OptionCount optionCount : options) {
+                ProductOption productOption = product.getProductOptions().stream()
+                        .filter(option -> option.getId().equals(optionCount.getOptionId()))
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("옵션을 찾을 수 없다잖니"));
 
-        cart.getCartItems().addAll(cartItems);
-        product.getCartItems().addAll(cartItems);
-        for (ProductOption productOption : product.getProductOptions()) {
-            productOption.getCartItems().addAll(cartItems.stream()
-                    .filter(cartItem -> cartItem.getProductOption().equals(productOption))
-                    .collect(Collectors.toList()));
+                // CartItem을 생성하거나 기존 항목을 업데이트합니다.
+                CartItem cartItem = cartItemRepository.findByCartIdAndProductIdAndProductOptionId(cart.getId(), product.getId(), productOption.getId());
+
+                if (cartItem != null) {
+                    cartItem.addCount(optionCount.getCount());
+                    cartItemRepository.save(cartItem);
+                } else {
+                    cartItem = CartItem.builder()
+                            .cart(cart)
+                            .product(product)
+                            .productOption(productOption)
+                            .count(optionCount.getCount())
+                            .build();
+                    cartItemRepository.save(cartItem);
+                }
+                cartItems.add(cartItem);
+            }
         }
-
         return cartItems;
     }
 
