@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.example.board.entity.Board;
 import org.example.cart.dto.CartItemDto;
 import org.example.cart.entity.CartItem;
 import org.example.cart.service.CartService;
@@ -91,6 +92,8 @@ public class CartController {
         private Long cartItemId;
         private Long productId;
         private String productName;
+        private List<Board> board;
+        private ProductOption productOption;
         private int count;
         private double productPrice;
         private double totalPrice;
@@ -107,6 +110,8 @@ public class CartController {
                         cartItem.getId(),
                         cartItem.getProduct().getId(),
                         cartItem.getProduct().getProductName(),
+                        cartItem.getProduct().getBoards(),
+                        cartItem.getProductOption(),
                         cartItem.getCount(),
                         cartItem.getProduct().getPrice(),
                         cartItem.getCount() * cartItem.getProduct().getPrice()
