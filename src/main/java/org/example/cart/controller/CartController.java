@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.example.board.entity.Board;
 import org.example.cart.dto.CartItemDto;
 import org.example.cart.entity.CartItem;
 import org.example.cart.service.CartService;
@@ -91,6 +92,7 @@ public class CartController {
         private Long cartItemId;
         private Long productId;
         private String productName;
+        private List<Board> board;
         private ProductOption productOption;
         private int count;
         private double productPrice;
@@ -108,6 +110,7 @@ public class CartController {
                         cartItem.getId(),
                         cartItem.getProduct().getId(),
                         cartItem.getProduct().getProductName(),
+                        cartItem.getProduct().getBoards(),
                         cartItem.getProductOption(),
                         cartItem.getCount(),
                         cartItem.getProduct().getPrice(),
@@ -116,5 +119,18 @@ public class CartController {
                 .collect(Collectors.toList());
 
         return RsData.of("S-11", "리스트 조회 성공", response);
+    }
+
+//  장바구니 삭제하는 구문
+    @Data
+    public static class DeleteCartRequest {
+        private List<Long> Ids;
+    }
+
+    @DeleteMapping(value = "/delete", consumes = APPLICATION_JSON_VALUE)
+    public RsData<?> deleteCart (@RequestBody DeleteCartRequest deleteCartRequest) {
+        cartService.deleteCart(deleteCartRequest.getIds());
+
+        return RsData.of("S-12", "장바구니 삭제 성공", null);
     }
 }

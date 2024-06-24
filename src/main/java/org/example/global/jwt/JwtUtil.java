@@ -38,7 +38,7 @@ public class JwtUtil {
 
         if (memberDto == null) return null;
 
-        return jwtProvider.genToken(memberDto.toClaims(), 60 * 60);
+        return jwtProvider.genToken(memberDto.toClaims(), 60 * 20);
     }
 
     public String genRefreshToken(String username) {
