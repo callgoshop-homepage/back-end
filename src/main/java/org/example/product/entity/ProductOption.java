@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.example.cart.entity.CartItem;
 import org.example.global.baseentity.BaseEntity;
+import org.example.productorder.entity.ProductOrderItem;
 
 import java.util.List;
 
@@ -36,4 +37,8 @@ public class ProductOption extends BaseEntity {
     @OneToMany(mappedBy = "productOption", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<CartItem> cartItems;
+
+    @OneToMany(mappedBy = "productOption", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ProductOrderItem> productOrderItems;
 }

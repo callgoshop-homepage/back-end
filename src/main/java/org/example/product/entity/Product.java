@@ -11,6 +11,7 @@ import org.example.cart.entity.CartItem;
 import org.example.global.baseentity.BaseEntity;
 import org.example.cart.entity.Cart;
 import org.example.productorder.entity.ProductOrder;
+import org.example.productorder.entity.ProductOrderItem;
 
 import java.util.List;
 
@@ -57,5 +58,5 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<ProductOrder> productOrder;
+    private List<ProductOrderItem> productOrderItems;
 }
