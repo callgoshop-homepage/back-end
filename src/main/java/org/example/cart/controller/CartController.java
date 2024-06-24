@@ -27,7 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/cart", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/cart")
 public class CartController {
 
     private final CartService cartService;
@@ -50,7 +50,7 @@ public class CartController {
         private double totalPrice;
     }
 
-    @PostMapping(value = "/add", consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/add")
     public RsData<List<AddCartResponse>> addCart(HttpServletRequest request, @RequestBody AddCartRequest addCartRequest) {
         String token = jwtController.extractTokenFromHeader(request);
         String username = jwtProvider.getUsername(token);
@@ -96,7 +96,7 @@ public class CartController {
         private double totalPrice;
     }
 
-    @GetMapping(value = "/cartList", consumes = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/cartList")
     public RsData<List<CartItemResponse>> cartList(HttpServletRequest request) {
         String token = jwtController.extractTokenFromHeader(request);
         String username = jwtProvider.getUsername(token);

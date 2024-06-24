@@ -91,6 +91,8 @@ public class CartService {
     public List<CartItem> getCartList(String username) {
         Member member = memberRepository.findByUsername(username).orElse(null);
 
-        return cartRepository.findByMember(member);
+        Cart cart = cartRepository.findByMember(member);
+
+        return cartItemRepository.findByCart(cart);
     }
 }
