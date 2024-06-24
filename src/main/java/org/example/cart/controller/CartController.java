@@ -120,4 +120,17 @@ public class CartController {
 
         return RsData.of("S-11", "리스트 조회 성공", response);
     }
+
+//  장바구니 삭제하는 구문
+    @Data
+    public static class DeleteCartRequest {
+        private List<Long> Ids;
+    }
+
+    @DeleteMapping(value = "/delete", consumes = APPLICATION_JSON_VALUE)
+    public RsData<?> deleteCart (@RequestBody DeleteCartRequest deleteCartRequest) {
+        cartService.deleteCart(deleteCartRequest.getIds());
+
+        return RsData.of("S-12", "장바구니 삭제 성공", null);
+    }
 }
