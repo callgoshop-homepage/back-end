@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,5 +95,13 @@ public class CartService {
         Cart cart = cartRepository.findByMember(member);
 
         return cartItemRepository.findByCart(cart);
+    }
+
+//    장바구니 삭제하는 구문
+    public void deleteCart(List<Long> ids) {
+        for (Long id : ids) {
+            Cart cart = cartRepository.findById(id).orElse(null);
+            cartRepository.delete(cart);
+        }
     }
 }
