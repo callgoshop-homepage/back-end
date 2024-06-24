@@ -1,15 +1,19 @@
 package org.example.productorder.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.example.cart.entity.CartItem;
 import org.example.global.baseentity.BaseEntity;
 import org.example.member.entity.Member;
 import org.example.product.entity.Product;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -47,17 +51,21 @@ public class ProductOrder extends BaseEntity {
     //    주소
     private String address;
 
-    //    수량
-    @Min(value = 1, message = "최소 1개 이상 담아주세요")
-    private int count;
-
     // 총 금액
     private Long totalPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    @JsonBackReference
-    private Product product;
+    //    주문 상세 더하는 구문
+    @JsonManagedReference
+    @OneToMany(mappedBy = "productOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductOrderItem> productOrderItems = new ArrayList<>();
+
+    public void addProductOrderItem(ProductOrderItem item) {
+        if (this.productOrderItems == null) {
+            this.productOrderItems = new ArrayList<>();
+        }
+        item.setProductOrder(this);
+        this.productOrderItems.add(item);
+    }
 
     @ManyToOne
     @JoinColumn(name = "member_id")
