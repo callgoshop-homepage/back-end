@@ -47,6 +47,7 @@ public class CartService {
 
             if (cartItem != null) {
                 cartItem.addCount(count);
+                cartItemRepository.save(cartItem);
             } else {
                 cartItem = CartItem.builder()
                         .cart(cart)
