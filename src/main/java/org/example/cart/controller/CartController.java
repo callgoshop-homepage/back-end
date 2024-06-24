@@ -91,6 +91,7 @@ public class CartController {
         private Long cartItemId;
         private Long productId;
         private String productName;
+        private ProductOption productOption;
         private int count;
         private double productPrice;
         private double totalPrice;
@@ -107,6 +108,7 @@ public class CartController {
                         cartItem.getId(),
                         cartItem.getProduct().getId(),
                         cartItem.getProduct().getProductName(),
+                        cartItem.getProductOption(),
                         cartItem.getCount(),
                         cartItem.getProduct().getPrice(),
                         cartItem.getCount() * cartItem.getProduct().getPrice()
