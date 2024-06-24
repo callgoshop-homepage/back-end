@@ -41,8 +41,11 @@ public class ProductOrder extends BaseEntity {
     //    송장 번호
     private Long invoiceNumber;
 
-    //    승인 상태
+    //    승인 상태 0 : 미승인 , 1 : 승인 , 2 : 승인 거절
     private int approveStatus;
+
+    //    주소
+    private String address;
 
     //    수량
     @Min(value = 1, message = "최소 1개 이상 담아주세요")

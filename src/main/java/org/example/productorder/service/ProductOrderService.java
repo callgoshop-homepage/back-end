@@ -38,6 +38,7 @@ public class ProductOrderService {
                     .parcelCompany(null)
                     .invoiceNumber(null)
                     .approveStatus(0)
+                    .address(productOrderDto.getAddress())
                     .count(productOrderDto.getCount())
                     .totalPrice(totalPrice)
                     .member(member.get())
