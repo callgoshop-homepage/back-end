@@ -13,6 +13,8 @@ public class ProductOrderItemDto {
     @Data
     public static class OptionCount {
         private Long optionId;
+        private String optionName;
+        private Long optionPrice;
         private int count;
     }
 }

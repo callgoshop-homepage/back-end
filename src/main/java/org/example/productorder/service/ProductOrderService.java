@@ -32,67 +32,68 @@ public class ProductOrderService {
 
     //    주문 목록을 추가하는 구문
     public ProductOrder addProductOrder(ProductOrderDto productOrderDto, String username) {
-        Optional<Member> member = memberRepository.findByUsername(username);
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
 
-        System.out.println(productOrderDto);
-
-            ProductOrder productOrder = ProductOrder.builder()
-                    .reciever(productOrderDto.getReciever())
-                    .orderDate(LocalDateTime.now())
-                    .approvalDate(null)
-                    .deliveryMethod(null)
-                    .parcelCompany(null)
-                    .invoiceNumber(null)
-                    .approveStatus(0)
-                    .address(productOrderDto.getAddress())
-                    .totalPrice(0L)
-                    .member(member.get())
-                    .build();
+        ProductOrder productOrder = ProductOrder.builder()
+                .reciever(productOrderDto.getReciever())
+                .orderDate(LocalDateTime.now())
+                .approvalDate(null)
+                .deliveryMethod(null)
+                .parcelCompany(null)
+                .invoiceNumber(null)
+                .approveStatus("미승인")
+                .address(productOrderDto.getAddress())
+                .totalPrice(0L)
+                .member(member)
+                .buyer(member.getUsername())
+                .buyerPhoneNumber(member.getPhoneNumber())
+                .build();
 
         productOrderRepository.save(productOrder);
 
         Long totalPrice = 0L;
-            for (ProductOrderItemDto itemDto : productOrderDto.getOrderItems()) {
-                Optional<Product> product1 = productRepository.findById(itemDto.getProductId());
-                Product product = product1.get();
+        for (ProductOrderItemDto itemDto : productOrderDto.getOrderItems()) {
+            Product product = productRepository.findById(itemDto.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
 
-                if (itemDto.getCount() > 0) {
+            productOrder.setProductName(product.getProductName());
+
+            if (itemDto.getCount() > 0) {
+                ProductOrderItem productOrderItem = ProductOrderItem.builder()
+                        .product(product)
+                        .count(itemDto.getCount())
+                        .productOrder(productOrder)
+                        .build();
+
+                productOrder.addProductOrderItem(productOrderItem);
+                productOrderItemRepository.save(productOrderItem);
+                totalPrice += product.getPrice() * itemDto.getCount();
+            }
+
+            if (itemDto.getOptions() != null && !itemDto.getOptions().isEmpty()) {
+                for (ProductOrderItemDto.OptionCount optionCount : itemDto.getOptions()) {
+                    ProductOption productOption = productOptionRepository.findById(optionCount.getOptionId())
+                            .orElseThrow(() -> new RuntimeException("Option not found"));
+
                     ProductOrderItem productOrderItem = ProductOrderItem.builder()
                             .product(product)
-                            .count(itemDto.getCount())
+                            .productOption(productOption)
+                            .count(optionCount.getCount())
+                            .optionName(productOption.getOptionName())
+                            .optionPrice(productOption.getOptionPrice())
                             .productOrder(productOrder)
                             .build();
 
                     productOrder.addProductOrderItem(productOrderItem);
-                    totalPrice += product.getPrice() * itemDto.getCount();
-                }
-
-                if (itemDto.getOptions() != null && !itemDto.getOptions().isEmpty()) {
-                    for (ProductOrderItemDto.OptionCount optionCount : itemDto.getOptions()) {
-                        ProductOption productOption = product.getProductOptions().stream()
-                                .filter(option -> option.getId().equals(optionCount.getOptionId()))
-                                .findFirst()
-                                .orElseThrow(() -> new RuntimeException("옵션을 찾을 수 없다잖니"));
-
-                        ProductOrderItem productOrderItem = ProductOrderItem.builder()
-                                .product(product)
-                                .productOption(productOption)
-                                .count(optionCount.getCount())
-                                .productOrder(productOrder)
-                                .build();
-
-                        ProductOption productOption1 = productOptionRepository.findById(optionCount.getOptionId()).get();
-
-                        productOrder.addProductOrderItem(productOrderItem);
-                        totalPrice += (product.getPrice() + productOption1.getOptionPrice()) * optionCount.getCount();
-                    }
+                    productOrderItemRepository.save(productOrderItem);
+                    totalPrice += (product.getPrice() + productOption.getOptionPrice()) * optionCount.getCount();
                 }
             }
+        }
 
         productOrder.setTotalPrice(totalPrice);
-        productOrder = productOrderRepository.save(productOrder);
-
-        return productOrder;
+        return productOrderRepository.save(productOrder);
     }
 
 //    주문 리스트 불러오기

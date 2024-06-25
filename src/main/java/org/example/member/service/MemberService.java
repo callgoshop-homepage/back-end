@@ -100,7 +100,7 @@ public class MemberService {
 
     public void PasswordModify (Member member, String password) {
         Member memberModify = member;
-
+        
         memberModify.setPassword(passwordEncoder.encode(password));
 
         memberRepository.save(memberModify);
