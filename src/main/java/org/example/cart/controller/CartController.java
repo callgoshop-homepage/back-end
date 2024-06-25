@@ -124,10 +124,10 @@ public class CartController {
 //  장바구니 삭제하는 구문
     @Data
     public static class DeleteCartRequest {
-        private List<Long> Ids;
+        private List<Long> ids;
     }
 
-    @DeleteMapping(value = "/delete", consumes = APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete")
     public RsData<?> deleteCart (@RequestBody DeleteCartRequest deleteCartRequest) {
         cartService.deleteCart(deleteCartRequest.getIds());
 

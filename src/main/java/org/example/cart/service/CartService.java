@@ -100,8 +100,8 @@ public class CartService {
 //    장바구니 삭제하는 구문
     public void deleteCart(List<Long> ids) {
         for (Long id : ids) {
-            Cart cart = cartRepository.findById(id).orElse(null);
-            cartRepository.delete(cart);
+            CartItem cart = cartItemRepository.findById(id).orElse(null);
+            cartItemRepository.delete(cart);
         }
     }
 }
