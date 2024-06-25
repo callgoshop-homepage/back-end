@@ -85,4 +85,9 @@ public class ProductService {
     public Product findById(Long id) {
         return this.productRepository.findById(id).orElse(null);
     }
+
+//    신상품 리스트 조회하는 구문
+    public List<Product> recentProduct() {
+        return productRepository.findTop4ByOrderByCreateDateDesc();
+    }
 }

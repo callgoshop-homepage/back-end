@@ -79,4 +79,13 @@ public class ProductController {
 
         return RsData.of("S-8", "성공", new detailResponse(product));
     }
+
+//    신상품 등록 리스트
+    @GetMapping(value = "/recentlist", consumes = APPLICATION_JSON_VALUE)
+    public RsData<ProductsListResponse> productRecentList() {
+
+        List<Product> recentList = productService.recentProduct();
+
+        return RsData.of("S-12", "신상품 조회 성공", new ProductsListResponse(recentList));
+    }
 }
