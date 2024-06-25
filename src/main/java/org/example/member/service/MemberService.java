@@ -65,16 +65,16 @@ public class MemberService {
 
 //    회원 수정하는 구문
     public Member modify (String username, String name, String phoneNumber, String password) {
-        Member member = memberRepository.findByUsername(username) //유저 찾기
-                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
+        Optional<Member> member1 = memberRepository.findByUsername(username);
+        Member member = member1.get();
 
-        if (password == null || password.isEmpty()) {
+        if (passwordEncoder.matches(password, member.getPassword())) {
             member.setName(name);
             member.setPhoneNumber(phoneNumber);
         } else {
             member.setName(name);
-            member.setPassword(passwordEncoder.encode(password));
             member.setPhoneNumber(phoneNumber);
+            member.setPassword(passwordEncoder.encode(password));
         }
 
         memberRepository.save(member);

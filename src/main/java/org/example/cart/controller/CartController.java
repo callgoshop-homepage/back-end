@@ -37,7 +37,6 @@ public class CartController {
     private final ProductRepository productRepository;
 
     //    장바구니에 상품 추가하는 구문
-
     @AllArgsConstructor
     @Getter
     public static class AddCartResponse {
@@ -85,7 +84,6 @@ public class CartController {
     }
 
 //    로그인 유저의 장바구니 리스트 조회하는 구문
-
     @AllArgsConstructor
     @Getter
     public static class CartItemResponse {
@@ -121,14 +119,16 @@ public class CartController {
         return RsData.of("S-11", "리스트 조회 성공", response);
     }
 
-//  장바구니 삭제하는 구문
+    //  장바구니 삭제하는 구문
     @Data
     public static class DeleteCartRequest {
         private List<Long> ids;
     }
 
-    @DeleteMapping(value = "/delete")
-    public RsData<?> deleteCart (@RequestBody DeleteCartRequest deleteCartRequest) {
+
+    @DeleteMapping(value = "/delete", consumes = APPLICATION_JSON_VALUE)
+    public RsData<?> deleteCart(@RequestBody DeleteCartRequest deleteCartRequest) {
+
         cartService.deleteCart(deleteCartRequest.getIds());
 
         return RsData.of("S-12", "장바구니 삭제 성공", null);
