@@ -36,7 +36,7 @@ public class ProductOrderDto extends BaseEntity {
     private Long invoiceNumber;
 
     //    승인 상태
-    private int approveStatus;
+    private String approveStatus;
 
     //    주소
     private String address;
