@@ -43,7 +43,7 @@ public class ProductOrderService {
                     .deliveryMethod(null)
                     .parcelCompany(null)
                     .invoiceNumber(null)
-                    .approveStatus(0)
+                    .approveStatus("미승인")
                     .address(productOrderDto.getAddress())
                     .totalPrice(0L)
                     .member(member.get())
