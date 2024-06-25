@@ -95,4 +95,14 @@ public class ProductService {
     public void deleteProduct (Long id) {
         productRepository.deleteById(id);
     }
+
+//    추천 상품 등록하는 구문
+    public List<Product> suggestProduct(List<Long> ids) {
+        List<Product> products = new ArrayList<>();
+        for (Long id : ids) {
+            Optional<Product> product = productRepository.findById(id);
+            products.add(product.orElse(null));
+        }
+        return products;
+    }
 }
