@@ -68,9 +68,14 @@ public class MemberService {
         Optional<Member> member1 = memberRepository.findByUsername(username);
         Member member = member1.get();
 
-        member.setName(name);
-        member.setPhoneNumber(phoneNumber);
-        member.setPassword(passwordEncoder.encode(password));
+        if (passwordEncoder.matches(password, member.getPassword())) {
+            member.setName(name);
+            member.setPhoneNumber(phoneNumber);
+        } else {
+            member.setName(name);
+            member.setPhoneNumber(phoneNumber);
+            member.setPassword(passwordEncoder.encode(password));
+        }
 
         memberRepository.save(member);
         return member;
