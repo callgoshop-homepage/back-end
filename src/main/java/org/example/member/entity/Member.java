@@ -60,6 +60,14 @@ public class Member extends BaseEntity {
         return "gysoft".equals(username);
     }
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductOrder> productOrders;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ProductOrder> productOrders = new ArrayList<>();
+
+    public void addProductOrder(ProductOrder productOrder) {
+        if (productOrders == null) {
+            this.productOrders = new ArrayList<>();
+        }
+        this.productOrders.add(productOrder);
+        productOrder.setMember(this);
+    }
 }
