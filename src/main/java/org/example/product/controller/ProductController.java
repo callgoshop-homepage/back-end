@@ -18,7 +18,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/product", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/product")
 public class ProductController {
 
     private final ProductService productService;
@@ -65,7 +65,7 @@ public class ProductController {
         return RsData.of("S-11", "상품 조회 성공", new ProductsListResponse(productList));
     }
 
-//    상품을 클릭했을 때, 디테일로 들어가는 구문
+    //    상품을 클릭했을 때, 디테일로 들어가는 구문
     @AllArgsConstructor
     @Getter
     public static class detailResponse {
@@ -78,5 +78,22 @@ public class ProductController {
         Product product = productService.findById(id);
 
         return RsData.of("S-8", "성공", new detailResponse(product));
+    }
+
+    //    신상품 등록 리스트
+    @GetMapping(value = "/recentlist", consumes = APPLICATION_JSON_VALUE)
+    public RsData<ProductsListResponse> productRecentList() {
+
+        List<Product> recentList = productService.recentProduct();
+
+        return RsData.of("S-12", "신상품 조회 성공", new ProductsListResponse(recentList));
+    }
+
+    //    등록된 상품 삭제하는 구문
+    @DeleteMapping("/delete/{id}")
+    public RsData<?> productDelete(@PathVariable(value = "id") Long id) {
+        productService.deleteProduct(id);
+
+        return RsData.of("S-13", "상품 삭제 성공", null);
     }
 }
