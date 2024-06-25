@@ -28,7 +28,7 @@ public class ProductOrder extends BaseEntity {
     private Long id;
 
     //    수취인명
-    private String receiver;
+    private String reciever;
 
     //    승인 처리일
     private LocalDateTime approvalDate;

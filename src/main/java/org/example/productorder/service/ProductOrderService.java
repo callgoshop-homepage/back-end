@@ -5,6 +5,7 @@ import org.example.member.entity.Member;
 import org.example.member.repository.MemberRepository;
 import org.example.product.entity.Product;
 import org.example.product.entity.ProductOption;
+import org.example.product.repository.ProductOptionRepository;
 import org.example.product.repository.ProductRepository;
 import org.example.productorder.dto.ProductOrderDto;
 import org.example.productorder.dto.ProductOrderItemDto;
@@ -27,15 +28,16 @@ public class ProductOrderService {
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
     private final ProductOrderItemRepository productOrderItemRepository;
+    private final ProductOptionRepository productOptionRepository;
 
-//    주문 목록을 추가하는 구문
+    //    주문 목록을 추가하는 구문
     public ProductOrder addProductOrder(ProductOrderDto productOrderDto, String username) {
         Optional<Member> member = memberRepository.findByUsername(username);
 
         System.out.println(productOrderDto);
 
             ProductOrder productOrder = ProductOrder.builder()
-                    .receiver(productOrderDto.getReciever())
+                    .reciever(productOrderDto.getReciever())
                     .orderDate(LocalDateTime.now())
                     .approvalDate(null)
                     .deliveryMethod(null)
@@ -79,8 +81,10 @@ public class ProductOrderService {
                                 .productOrder(productOrder)
                                 .build();
 
+                        ProductOption productOption1 = productOptionRepository.findById(optionCount.getOptionId()).get();
+
                         productOrder.addProductOrderItem(productOrderItem);
-                        totalPrice += product.getPrice() * optionCount.getCount();
+                        totalPrice += (product.getPrice() + productOption1.getOptionPrice()) * optionCount.getCount();
                     }
                 }
             }

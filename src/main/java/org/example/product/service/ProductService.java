@@ -90,4 +90,9 @@ public class ProductService {
     public List<Product> recentProduct() {
         return productRepository.findTop4ByOrderByCreateDateDesc();
     }
+
+//    등록된 상품 삭제하는 구문
+    public void deleteProduct (Long id) {
+        productRepository.deleteById(id);
+    }
 }
