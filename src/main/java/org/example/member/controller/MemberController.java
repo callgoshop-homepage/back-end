@@ -159,9 +159,11 @@ public class MemberController {
     }
 
     @PostMapping(value = "/modify", consumes = ALL_VALUE)
-    public RsData<ModifyResponse> modify(@Valid @RequestBody ModifyRequest modifyRequest, HttpServletResponse resp) {
-        Member member = memberService.modify(modifyRequest.getUsername(), modifyRequest.getName(), modifyRequest.getPhoneNumber(), modifyRequest.getPassword());
-        // 수정된 회원 정보로 다시 로그인하여 새로운 토큰 발급
+    public RsData<ModifyResponse> modify(@Valid @RequestBody ModifyRequest modifyRequest, HttpServletResponse resp, HttpServletRequest request) {
+        String token = jwtController.extractTokenFromHeader(request);
+        String username = jwtProvider.getUsername(token);
+        Member member = memberService.modify(username, modifyRequest.getName(), modifyRequest.getPhoneNumber(), modifyRequest.getPassword());
+
         String accessToken = jwtUtil.genAccessToken(modifyRequest.getUsername());
         String refreshToken = jwtUtil.genRefreshToken(modifyRequest.getUsername());
 
