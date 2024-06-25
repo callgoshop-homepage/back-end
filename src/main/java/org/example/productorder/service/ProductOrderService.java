@@ -4,13 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.example.member.entity.Member;
 import org.example.member.repository.MemberRepository;
 import org.example.product.entity.Product;
+import org.example.product.entity.ProductOption;
 import org.example.product.repository.ProductRepository;
 import org.example.productorder.dto.ProductOrderDto;
+import org.example.productorder.dto.ProductOrderItemDto;
 import org.example.productorder.entity.ProductOrder;
+import org.example.productorder.entity.ProductOrderItem;
+import org.example.productorder.repository.ProductOrderItemRepository;
 import org.example.productorder.repository.ProductOrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,14 +26,13 @@ public class ProductOrderService {
     private final ProductOrderRepository productOrderRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
+    private final ProductOrderItemRepository productOrderItemRepository;
 
 //    주문 목록을 추가하는 구문
     public ProductOrder addProductOrder(ProductOrderDto productOrderDto, String username) {
         Optional<Member> member = memberRepository.findByUsername(username);
 
-        Optional<Product> product = productRepository.findById(productOrderDto.getId());
-
-            Long totalPrice = productOrderDto.getTotalPrice();
+        System.out.println(productOrderDto);
 
             ProductOrder productOrder = ProductOrder.builder()
                     .receiver(productOrderDto.getReciever())
@@ -39,18 +43,52 @@ public class ProductOrderService {
                     .invoiceNumber(null)
                     .approveStatus(0)
                     .address(productOrderDto.getAddress())
-                    .count(productOrderDto.getCount())
-                    .totalPrice(totalPrice)
+                    .totalPrice(0L)
                     .member(member.get())
-                    .product(product.get())
                     .build();
 
-            productOrder.setProduct(product.get());
-            productOrder.setMember(member.get());
+        productOrderRepository.save(productOrder);
 
-           productOrderRepository.save(productOrder);
+        Long totalPrice = 0L;
+            for (ProductOrderItemDto itemDto : productOrderDto.getOrderItems()) {
+                Optional<Product> product1 = productRepository.findById(itemDto.getProductId());
+                Product product = product1.get();
 
-           return productOrder;
+                if (itemDto.getCount() > 0) {
+                    ProductOrderItem productOrderItem = ProductOrderItem.builder()
+                            .product(product)
+                            .count(itemDto.getCount())
+                            .productOrder(productOrder)
+                            .build();
+
+                    productOrder.addProductOrderItem(productOrderItem);
+                    totalPrice += product.getPrice() * itemDto.getCount();
+                }
+
+                if (itemDto.getOptions() != null && !itemDto.getOptions().isEmpty()) {
+                    for (ProductOrderItemDto.OptionCount optionCount : itemDto.getOptions()) {
+                        ProductOption productOption = product.getProductOptions().stream()
+                                .filter(option -> option.getId().equals(optionCount.getOptionId()))
+                                .findFirst()
+                                .orElseThrow(() -> new RuntimeException("옵션을 찾을 수 없다잖니"));
+
+                        ProductOrderItem productOrderItem = ProductOrderItem.builder()
+                                .product(product)
+                                .productOption(productOption)
+                                .count(optionCount.getCount())
+                                .productOrder(productOrder)
+                                .build();
+
+                        productOrder.addProductOrderItem(productOrderItem);
+                        totalPrice += product.getPrice() * optionCount.getCount();
+                    }
+                }
+            }
+
+        productOrder.setTotalPrice(totalPrice);
+        productOrder = productOrderRepository.save(productOrder);
+
+        return productOrder;
     }
 
 //    주문 리스트 불러오기

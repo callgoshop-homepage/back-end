@@ -37,7 +37,7 @@ public class ProductOrderController {
         private final ProductOrder productOrder;
     }
 
-    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/add")
     public RsData<ProductsOrderResponse> addProductOrder(@RequestBody ProductOrderDto productOrderDto, HttpServletRequest request) {
         String token = jwtController.extractTokenFromHeader(request);
         String username = jwtProvider.getUsername(token);
@@ -54,7 +54,7 @@ public class ProductOrderController {
         private final List<ProductOrder> productOrderList;
     }
 
-    @GetMapping(value = "/list", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @GetMapping(value = "/list")
     public RsData<ProductsOrderListResponse> productOrderList() {
         List<ProductOrder> productOrderList = productOrderService.productOrderList();
 
@@ -68,7 +68,7 @@ public class ProductOrderController {
         private final ProductOrder productOrder;
     }
 
-    @PutMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/modify")
     public RsData<ProductsOrderModifyResponse> productOrderModify(@RequestBody ProductOrderDto productOrderDto) {
         ProductOrder productOrder = productOrderService.modifyProductOrder(productOrderDto);
 

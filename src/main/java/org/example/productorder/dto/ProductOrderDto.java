@@ -5,6 +5,8 @@ import lombok.*;
 import org.example.global.baseentity.BaseEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,10 +41,8 @@ public class ProductOrderDto extends BaseEntity {
     //    주소
     private String address;
 
-    //    수량
-    @Min(value = 1, message = "최소 1개 이상 담아주세요")
-    private int count;
-
     // 총 금액
     private Long totalPrice;
+
+    private List<ProductOrderItemDto> orderItems = new ArrayList<>();
 }
