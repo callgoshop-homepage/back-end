@@ -96,4 +96,22 @@ public class ProductController {
 
         return RsData.of("S-13", "상품 삭제 성공", null);
     }
+
+    //    추천 상품 등록하는 구문
+    @Data
+    public static class SuggestionProductRequest {
+        private List<Long> ids;
+    }
+    @AllArgsConstructor
+    @Getter
+    public static class SuggestionProductResponse {
+        private final List<Product> products;
+    }
+    @PostMapping(value = "/suggestion", consumes = APPLICATION_JSON_VALUE)
+    public RsData<SuggestionProductResponse> suggestion(@RequestBody SuggestionProductRequest suggestionProductRequest) {
+
+        List<Product> products = productService.suggestProduct(suggestionProductRequest.getIds());
+
+        return RsData.of("S-14", "추천 상품 등록 성공",  new SuggestionProductResponse(products));
+    }
 }

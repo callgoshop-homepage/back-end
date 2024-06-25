@@ -68,7 +68,7 @@ public class MemberService {
         Optional<Member> member1 = memberRepository.findByUsername(username);
         Member member = member1.get();
 
-        if (passwordEncoder.matches(password, member.getPassword())) {
+        if (password == null || password.isEmpty()) {
             member.setName(name);
             member.setPhoneNumber(phoneNumber);
         } else {

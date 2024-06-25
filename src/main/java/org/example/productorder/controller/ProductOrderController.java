@@ -17,6 +17,7 @@ import org.example.token.controller.JwtController;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -38,13 +39,17 @@ public class ProductOrderController {
     }
 
     @PostMapping(value = "/add")
-    public RsData<ProductsOrderResponse> addProductOrder(@RequestBody ProductOrderDto productOrderDto, HttpServletRequest request) {
+    public RsData<List<ProductsOrderResponse>> addProductOrder(@RequestBody List<ProductOrderDto> productOrderDtos, HttpServletRequest request) {
         String token = jwtController.extractTokenFromHeader(request);
         String username = jwtProvider.getUsername(token);
 
-        ProductOrder productOrder = productOrderService.addProductOrder(productOrderDto, username);
+        List<ProductsOrderResponse> responses = new ArrayList<>();
+        for (ProductOrderDto productOrderDto : productOrderDtos) {
+            ProductOrder productOrder = productOrderService.addProductOrder(productOrderDto, username);
+            responses.add(new ProductsOrderResponse(productOrder));
+        }
 
-        return RsData.of("S-20", "상품 주문 성공", new ProductsOrderResponse(productOrder));
+        return RsData.of("S-20", "상품 주문 성공", responses);
     }
 
     //    주문 리스트 불러오는 구문
