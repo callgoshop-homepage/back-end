@@ -164,8 +164,8 @@ public class MemberController {
         String username = jwtProvider.getUsername(token);
         Member member = memberService.modify(username, modifyRequest.getName(), modifyRequest.getPhoneNumber(), modifyRequest.getPassword());
 
-        String accessToken = jwtUtil.genAccessToken(modifyRequest.getUsername());
-        String refreshToken = jwtUtil.genRefreshToken(modifyRequest.getUsername());
+        String accessToken = jwtUtil.genAccessToken(username);
+        String refreshToken = jwtUtil.genRefreshToken(username);
 
         resp.addHeader("Authorization", "Bearer " + accessToken);
         resp.addHeader("Refresh-Token", refreshToken);

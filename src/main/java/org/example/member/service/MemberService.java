@@ -66,9 +66,9 @@ public class MemberService {
 //    회원 수정하는 구문
     public Member modify (String username, String name, String phoneNumber, String password) {
         Optional<Member> member1 = memberRepository.findByUsername(username);
-        Member member = member1.get();
+        Member member = member1.orElse(null);
 
-        if (passwordEncoder.matches(password, member.getPassword())) {
+        if (password == null || password.isEmpty()) {
             member.setName(name);
             member.setPhoneNumber(phoneNumber);
         } else {
