@@ -13,6 +13,7 @@ import org.example.cart.entity.Cart;
 import org.example.productorder.entity.ProductOrder;
 import org.example.productorder.entity.ProductOrderItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -58,5 +59,15 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<ProductOrderItem> productOrderItems;
+    private List<ProductOrderItem> productOrderItems = new ArrayList<>();
+
+    public void addProductOrderItem(ProductOrderItem productOrderItem) {
+        if (this.productOrderItems == null) {
+            this.productOrderItems = new ArrayList<>();
+        }
+        if (!this.productOrderItems.contains(productOrderItem)) {
+            this.productOrderItems.add(productOrderItem);
+            productOrderItem.setProduct(this);
+        }
+    }
 }

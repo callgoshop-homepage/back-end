@@ -51,8 +51,17 @@ public class ProductOrder extends BaseEntity {
     //    주소
     private String address;
 
-    // 총 금액
+    //    총 금액
     private Long totalPrice;
+
+    //    구매자 명
+    private String buyer;
+
+    //    구매자 전화번호
+    private String buyerPhoneNumber;
+
+    //    상품 명
+    private String productName;
 
     //    주문 상세 더하는 구문
     @JsonManagedReference
@@ -67,8 +76,16 @@ public class ProductOrder extends BaseEntity {
         this.productOrderItems.add(item);
     }
 
+    //     (fetch = FetchType.EAGER) jpa에서 관계매핑되어있는 데이터 정보 조회할 수 있게 해주는 구문
     @ManyToOne
     @JoinColumn(name = "member_id")
     @JsonBackReference
     private Member member;
+
+    public void addMember(Member member) {
+        this.member = member;
+        if (member != null && !member.getProductOrders().contains(this)) {
+            member.addProductOrder(this);
+        }
+    }
 }

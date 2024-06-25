@@ -41,8 +41,17 @@ public class ProductOrderDto extends BaseEntity {
     //    주소
     private String address;
 
-    // 총 금액
+    //    총 금액
     private Long totalPrice;
+
+    //    구매자 명
+    private String buyer;
+
+    //    구매자 전화번호
+    private String buyerPhoneNumber;
+
+    //    상품 명
+    private String productName;
 
     private List<ProductOrderItemDto> orderItems = new ArrayList<>();
 }
