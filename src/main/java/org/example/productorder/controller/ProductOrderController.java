@@ -39,17 +39,13 @@ public class ProductOrderController {
     }
 
     @PostMapping(value = "/add")
-    public RsData<List<ProductsOrderResponse>> addProductOrder(@RequestBody List<ProductOrderDto> productOrderDtos, HttpServletRequest request) {
+    public RsData<ProductsOrderResponse> addProductOrder(@RequestBody ProductOrderDto productOrderDto, HttpServletRequest request) {
         String token = jwtController.extractTokenFromHeader(request);
         String username = jwtProvider.getUsername(token);
 
-        List<ProductsOrderResponse> responses = new ArrayList<>();
-        for (ProductOrderDto productOrderDto : productOrderDtos) {
-            ProductOrder productOrder = productOrderService.addProductOrder(productOrderDto, username);
-            responses.add(new ProductsOrderResponse(productOrder));
-        }
+        ProductOrder productOrder = productOrderService.addProductOrder(productOrderDto, username);
 
-        return RsData.of("S-20", "상품 주문 성공", responses);
+        return RsData.of("S-20", "상품 주문 성공", new ProductsOrderResponse(productOrder));
     }
 
     //    주문 리스트 불러오는 구문
