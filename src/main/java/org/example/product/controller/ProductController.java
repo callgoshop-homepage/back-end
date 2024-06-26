@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.util.MimeTypeUtils.ALL_VALUE;
 
 @RestController
 @RequiredArgsConstructor
@@ -95,5 +96,51 @@ public class ProductController {
         productService.deleteProduct(id);
 
         return RsData.of("S-13", "상품 삭제 성공", null);
+    }
+
+    //    추천 상품 등록하는 구문
+    @Data
+    public static class SuggestionProductRequest {
+        private List<Long> ids;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class SuggestionProductResponse {
+        private final List<Product> products;
+    }
+
+    @PostMapping(value = "/suggestion", consumes = APPLICATION_JSON_VALUE)
+    public RsData<SuggestionProductResponse> suggestion(@RequestBody SuggestionProductRequest suggestionProductRequest) {
+
+        List<Product> products = productService.suggestProduct(suggestionProductRequest.getIds());
+
+        return RsData.of("S-14", "추천 상품 등록 성공", new SuggestionProductResponse(products));
+    }
+
+    //    등록된 상품 수정하는 구문
+    @AllArgsConstructor
+    @Getter
+    public static class ModifyProductResponse {
+        private final Product product;
+    }
+
+    @PostMapping(value = "/modify", consumes = ALL_VALUE)
+    public RsData<ModifyProductResponse> modify(@RequestParam("id") Long id,
+                                                @RequestParam("files") List<MultipartFile> files,
+                                                @RequestParam("detailfiles") List<MultipartFile> detailfiles,
+                                                @RequestParam("productName") String productName,
+                                                @RequestParam("price") Long price,
+                                                @RequestParam("productNumber") Long productNumber,
+                                                @RequestParam("type") String type,
+                                                @RequestParam("parcel") String parcel,
+                                                @RequestParam("options") String optionsJson) throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<ProductOptionRequest> optionRequests = objectMapper.readValue(optionsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, ProductOptionRequest.class));
+
+        Product product = productService.modifyProduct(id, files, detailfiles, optionRequests, productName, price, productNumber, type, parcel);
+
+        return RsData.of("S-15", "수정 성공", new ModifyProductResponse(product));
     }
 }
