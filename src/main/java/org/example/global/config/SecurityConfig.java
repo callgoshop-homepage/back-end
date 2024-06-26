@@ -3,18 +3,25 @@ package org.example.global.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
 //    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -35,13 +42,26 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin.disable()) // 폼 로그인 방식 끄기
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(STATELESS)
-                )
-      ;
-
+                );
         return http.build();
     }
 
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(mappingJackson2HttpMessageConverter());
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+        jsonConverter.setSupportedMediaTypes(List.of(
+                new MediaType("application", "json", StandardCharsets.UTF_8),
+                new MediaType("application", "*+json", StandardCharsets.UTF_8)
+        ));
+        return jsonConverter;
+    }
 //    시큐리티 인증
+
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

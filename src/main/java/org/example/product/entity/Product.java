@@ -12,6 +12,7 @@ import org.example.global.baseentity.BaseEntity;
 import org.example.cart.entity.Cart;
 import org.example.productorder.entity.ProductOrder;
 import org.example.productorder.entity.ProductOrderItem;
+import org.example.suggestion.entity.Suggestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,23 +43,23 @@ public class Product extends BaseEntity {
 
     //    @JsonManagedReference는 순환참조 에러를 해결하기 위한 방법
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("product-boards")
     private List<Board> boards;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("product-detailBoards")
     private List<DetailBoard> detailBoards;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("product-cartItems")
     private List<CartItem> cartItems;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("product-productOptions")
     private List<ProductOption> productOptions;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("product-productOrderItems")
     private List<ProductOrderItem> productOrderItems = new ArrayList<>();
 
     public void addProductOrderItem(ProductOrderItem productOrderItem) {
@@ -69,5 +70,14 @@ public class Product extends BaseEntity {
             this.productOrderItems.add(productOrderItem);
             productOrderItem.setProduct(this);
         }
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "suggestion_id")
+    @JsonBackReference("suggestion-products")
+    private Suggestion suggestion;
+
+    public void addSuggestion(Suggestion suggestion) {
+        this.suggestion = suggestion;
     }
 }
