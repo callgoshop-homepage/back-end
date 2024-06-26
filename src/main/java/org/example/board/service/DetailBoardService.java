@@ -7,6 +7,7 @@ import org.example.board.entity.Board;
 import org.example.board.entity.DetailBoard;
 import org.example.board.repository.BoardRepository;
 import org.example.board.repository.DetailBoardRepository;
+import org.example.product.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,5 +42,9 @@ public class DetailBoardService {
             }
         }
         return list;
+    }
+
+    public void deleteDetailBoardsByProduct(Product existingProduct) {
+        detailBoardRepository.deleteByProduct(existingProduct);
     }
 }

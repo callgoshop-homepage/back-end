@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.board.controller.FileHandler;
 import org.example.board.entity.Board;
 import org.example.board.repository.BoardRepository;
+import org.example.product.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,5 +44,9 @@ public class BoardService {
 
     public Optional<Board> findBoard(Long id) {
         return boardRepository.findById(id);
+    }
+
+    public void deleteBoardsByProduct(Product existingProduct) {
+        boardRepository.deleteByProduct(existingProduct);
     }
 }
