@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.global.jwt.JwtProvider;
 import org.example.global.rs.RsData;
+import org.example.product.controller.ProductController;
 import org.example.product.entity.Product;
 import org.example.product.entity.ProductOption;
 import org.example.productorder.dto.ProductOrderDto;
@@ -74,5 +75,25 @@ public class ProductOrderController {
         ProductOrder productOrder = productOrderService.modifyProductOrder(productOrderDto);
 
         return RsData.of("S-22", "주문 리스트 수정 완료", new ProductsOrderModifyResponse(productOrder));
+    }
+
+    //    주문 상세 정보 불러오는 구문
+    @Data
+    public static class ProductDetailRequest {
+        private Long id;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class ProductDetailResponse {
+        private final ProductOrder productOrder;
+    }
+
+    @PostMapping(value = "/productDetail", consumes = APPLICATION_JSON_VALUE)
+    public RsData<ProductDetailResponse> productDetail(@RequestBody ProductDetailRequest productDetailRequest) {
+
+        ProductOrder productOrder = productOrderService.getProductOrderById(productDetailRequest.getId());
+
+        return RsData.of("S-23", "성공", new ProductDetailResponse(productOrder));
     }
 }
