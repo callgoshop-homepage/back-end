@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -133,16 +134,30 @@ public class ProductService {
 
     private void updateBoards(Product product, List<String> mainFilesName, List<MultipartFile> files) throws Exception {
         List<Board> existingBoards = product.getBoards();
+        String basePath = "/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/";
 
-//        데이터베이스에 파일 이름 존재하는지 확인
+        //        데이터베이스에 파일 이름 존재하는지 확인
         List<String> existionFileNames = existingBoards.stream()
                 .map(Board::getOriginalFileName)
                 .collect(Collectors.toList());
 
-//        파일 이름이 존재한다면 새 board리스트에 해당 데이터를 이전
+        //        파일 이름이 존재한다면 새 board리스트에 해당 데이터를 이전
         List<Board> boardsToKeep = existingBoards.stream()
                 .filter(board -> mainFilesName.contains(board.getStoredFileName()))
                 .collect(Collectors.toList());
+
+        //        삭제할 파일 리스트
+        List<Board> boardsToRemove = existingBoards.stream()
+                .filter(board -> !mainFilesName.contains(board.getStoredFileName()))
+                .collect(Collectors.toList());
+
+        // 파일 시스템에서 실제 파일 삭제
+        for (Board board : boardsToRemove) {
+            File file = new File(basePath + board.getStoredFileName());
+            if (file.exists()) {
+                file.delete();
+            }
+        }
 
         existingBoards.clear();
         existingBoards.addAll(boardsToKeep);
@@ -158,16 +173,30 @@ public class ProductService {
 
     private void updateDetailBoards(Product product, List<String> mainDetailFilesName, List<MultipartFile> detailfiles) throws Exception {
         List<DetailBoard> existingDetailBoards = product.getDetailBoards();
+        String basePath = "/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/";
 
         //        데이터베이스에 파일 이름 존재하는지 확인
         List<String> existionDetailFileNames = existingDetailBoards.stream()
                 .map(DetailBoard::getOriginalFileName)
                 .collect(Collectors.toList());
 
-//        파일 이름이 존재한다면 새 board리스트에 해당 데이터를 이전
+        //        파일 이름이 존재한다면 새 board리스트에 해당 데이터를 이전
         List<DetailBoard> boardsToKeep = existingDetailBoards.stream()
                 .filter(detailBoard -> mainDetailFilesName.contains(detailBoard.getStoredFileName()))
                 .collect(Collectors.toList());
+
+        //        삭제할 파일 리스트
+        List<DetailBoard> boardsToRemove = existingDetailBoards.stream()
+                .filter(detailBoard -> !mainDetailFilesName.contains(detailBoard.getStoredFileName()))
+                .collect(Collectors.toList());
+
+        // 파일 시스템에서 실제 파일 삭제
+        for (DetailBoard detailBoard : boardsToRemove) {
+            File file = new File(basePath + detailBoard.getStoredFileName());
+            if (file.exists()) {
+                file.delete();
+            }
+        }
 
         existingDetailBoards.clear();
         existingDetailBoards.addAll(boardsToKeep);
