@@ -114,12 +114,12 @@ public class ProductService {
 
     //    제품 수정하는 구문
     @Transactional
-    public Product modifyProduct(Long productId, List<MultipartFile> files, List<MultipartFile> detailfiles, List<ProductOptionRequest> optionRequests, String productName, Long price, Long productNumber, String type, String parcel) throws Exception {
+    public Product modifyProduct(Long productId, List<MultipartFile> files, List<MultipartFile> detailfiles, List<String> mainFilesName, List<String> mainDetailFilesName, List<ProductOptionRequest> optionRequests, String productName, Long price, Long productNumber, String type, String parcel) throws Exception {
         Product existingProduct = findById(productId);
 
         // 기존 컬렉션을 명시적으로 업데이트
-        updateBoards(existingProduct, files);
-        updateDetailBoards(existingProduct, detailfiles);
+        updateBoards(existingProduct, mainFilesName, files);
+        updateDetailBoards(existingProduct, mainDetailFilesName, detailfiles);
         updateProductOptions(existingProduct, optionRequests);
 
         existingProduct.setProductName(productName);
@@ -131,23 +131,53 @@ public class ProductService {
         return productRepository.save(existingProduct);
     }
 
-    private void updateBoards(Product product, List<MultipartFile> files) throws Exception {
+    private void updateBoards(Product product, List<String> mainFilesName, List<MultipartFile> files) throws Exception {
         List<Board> existingBoards = product.getBoards();
+
+//        데이터베이스에 파일 이름 존재하는지 확인
+        List<String> existionFileNames = existingBoards.stream()
+                .map(Board::getOriginalFileName)
+                .collect(Collectors.toList());
+
+//        파일 이름이 존재한다면 새 board리스트에 해당 데이터를 이전
+        List<Board> boardsToKeep = existingBoards.stream()
+                .filter(board -> mainFilesName.contains(board.getStoredFileName()))
+                .collect(Collectors.toList());
+
         existingBoards.clear();
-        List<Board> newBoards = fileHandler.parseFileInfo(files);
-        for (Board board : newBoards) {
-            board.setProduct(product);
-            existingBoards.add(board);
+        existingBoards.addAll(boardsToKeep);
+
+        if (!files.isEmpty()) {
+            List<Board> newBoards = fileHandler.parseFileInfo(files);
+            for (Board board : newBoards) {
+                board.setProduct(product);
+                existingBoards.add(board);
+            }
         }
     }
 
-    private void updateDetailBoards(Product product, List<MultipartFile> detailfiles) throws Exception {
+    private void updateDetailBoards(Product product, List<String> mainDetailFilesName, List<MultipartFile> detailfiles) throws Exception {
         List<DetailBoard> existingDetailBoards = product.getDetailBoards();
+
+        //        데이터베이스에 파일 이름 존재하는지 확인
+        List<String> existionDetailFileNames = existingDetailBoards.stream()
+                .map(DetailBoard::getOriginalFileName)
+                .collect(Collectors.toList());
+
+//        파일 이름이 존재한다면 새 board리스트에 해당 데이터를 이전
+        List<DetailBoard> boardsToKeep = existingDetailBoards.stream()
+                .filter(detailBoard -> mainDetailFilesName.contains(detailBoard.getStoredFileName()))
+                .collect(Collectors.toList());
+
         existingDetailBoards.clear();
-        List<DetailBoard> newDetailBoards = detailFileHandler.parseFileInfo(detailfiles);
-        for (DetailBoard detailBoard : newDetailBoards) {
-            detailBoard.setProduct(product);
-            existingDetailBoards.add(detailBoard);
+        existingDetailBoards.addAll(boardsToKeep);
+
+        if (!detailfiles.isEmpty()) {
+            List<DetailBoard> newDetailBoards = detailFileHandler.parseFileInfo(detailfiles);
+            for (DetailBoard detailBoard : newDetailBoards) {
+                detailBoard.setProduct(product);
+                existingDetailBoards.add(detailBoard);
+            }
         }
     }
 
