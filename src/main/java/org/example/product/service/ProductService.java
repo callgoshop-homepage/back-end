@@ -119,10 +119,10 @@ public class ProductService {
         Product existingProduct = findById(productId);
 
         // 기존 컬렉션을 명시적으로 업데이트
-        if (files != null || !files.isEmpty()) {
+        if ((files != null && !files.isEmpty()) || (!mainFilesName.isEmpty() && mainFilesName != null)) {
             updateBoards(existingProduct, mainFilesName, files);
         }
-        if (detailfiles != null || !detailfiles.isEmpty()) {
+        if ((detailfiles != null && !detailfiles.isEmpty()) || (!mainDetailFilesName.isEmpty() && mainDetailFilesName != null)) {
             updateDetailBoards(existingProduct, mainDetailFilesName, detailfiles);
         }
         if (optionRequests != null || !optionRequests.isEmpty()) {

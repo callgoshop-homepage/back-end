@@ -107,8 +107,8 @@ public class ProductController {
 
     @PostMapping(value = "/modify", consumes = ALL_VALUE)
     public RsData<ModifyProductResponse> modify(@RequestParam("id") Long id,
-                                                @RequestParam("files") List<MultipartFile> files,
-                                                @RequestParam("detailfiles") List<MultipartFile> detailfiles,
+                                                @RequestParam(value = "files", required = false) List<MultipartFile> files,
+                                                @RequestParam(value = "detailfiles", required = false) List<MultipartFile> detailfiles,
                                                 @RequestParam("mainFilesName") List<String> mainFilesName,
                                                 @RequestParam("mainDetailFilesName") List<String> mainDetailFilesName,
                                                     @RequestParam("productName") String productName,

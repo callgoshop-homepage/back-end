@@ -21,13 +21,10 @@ public class Board extends BaseEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotNull
     private long boardIdx;
 
-    @NotNull
     private String originalFileName;
 
-    @NotNull
     private String storedFileName;
 
     private long fileSize;
