@@ -33,15 +33,14 @@ public class SuggestionController {
     @AllArgsConstructor
     @Getter
     public static class SuggestionResponse {
-        private List<Suggestion> suggestions;
+        private final Suggestion suggestions;
     }
 
     @PostMapping(value = "/add", consumes = APPLICATION_JSON_VALUE)
     public RsData<SuggestionResponse> createSuggestion(@RequestBody SuggestionRequest suggestionRequest) {
 
-        List<Suggestion> suggestions = suggestionService.save(suggestionRequest.getProducts());
+        Suggestion suggestions = suggestionService.save(suggestionRequest.getProducts());
 
         return RsData.of("S-30", "추천 목록 저장", new SuggestionResponse(suggestions));
     }
-//    추천 상품을 불러오는 구문
 }

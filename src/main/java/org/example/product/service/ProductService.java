@@ -2,6 +2,8 @@ package org.example.product.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.example.board.controller.DetailFileHandler;
+import org.example.board.controller.FileHandler;
 import org.example.board.entity.Board;
 import org.example.board.entity.DetailBoard;
 import org.example.board.service.BoardService;
@@ -14,6 +16,7 @@ import org.example.product.entity.ProductOption;
 import org.example.product.repository.ProductOptionRepository;
 import org.example.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -31,6 +34,9 @@ public class ProductService {
     //    제품 등록 구문
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
+    private final FileHandler fileHandler;
+    private final DetailFileHandler detailFileHandler;
+
 
     public Product createProduct(List<MultipartFile> files, List<MultipartFile> detailfiles, List<ProductOptionRequest> optionRequests, String productName, Long price, Long productNumber, String type, String parcel) throws Exception {
         List<Board> boards = boardService.addBoard(files);
@@ -107,47 +113,56 @@ public class ProductService {
     }
 
     //    제품 수정하는 구문
+    @Transactional
     public Product modifyProduct(Long productId, List<MultipartFile> files, List<MultipartFile> detailfiles, List<ProductOptionRequest> optionRequests, String productName, Long price, Long productNumber, String type, String parcel) throws Exception {
         Product existingProduct = findById(productId);
 
-        boardService.deleteBoardsByProduct(existingProduct);
-        detailBoardService.deleteDetailBoardsByProduct(existingProduct);
+        // 기존 컬렉션을 명시적으로 업데이트
+        updateBoards(existingProduct, files);
+        updateDetailBoards(existingProduct, detailfiles);
+        updateProductOptions(existingProduct, optionRequests);
 
-        List<Board> boards = boardService.addBoard(files);
-        List<DetailBoard> detailBoards = detailBoardService.addDetailBoard(detailfiles);
-
-        List<ProductOption> productOptions = new ArrayList<>();
-        for (ProductOptionRequest optionRequest : optionRequests) {
-            ProductOption option = ProductOption.builder()
-                    .optionName(optionRequest.getOptionName())
-                    .optionPrice(optionRequest.getOptionPrice())
-                    .build();
-            productOptions.add(option);
-        }
-
-        existingProduct.setBoards(boards);
-        existingProduct.setDetailBoards(detailBoards);
-        existingProduct.setProductOptions(productOptions);
         existingProduct.setProductName(productName);
         existingProduct.setPrice(price);
         existingProduct.setProductNumber(productNumber);
         existingProduct.setType(type);
         existingProduct.setParcel(parcel);
 
-        for (Board board : boards) {
-            board.setProduct(existingProduct);
+        return productRepository.save(existingProduct);
+    }
+
+    private void updateBoards(Product product, List<MultipartFile> files) throws Exception {
+        List<Board> existingBoards = product.getBoards();
+        existingBoards.clear();
+        List<Board> newBoards = fileHandler.parseFileInfo(files);
+        for (Board board : newBoards) {
+            board.setProduct(product);
+            existingBoards.add(board);
         }
+    }
 
-        for (DetailBoard detailBoard : detailBoards) {
-            detailBoard.setProduct(existingProduct);
+    private void updateDetailBoards(Product product, List<MultipartFile> detailfiles) throws Exception {
+        List<DetailBoard> existingDetailBoards = product.getDetailBoards();
+        existingDetailBoards.clear();
+        List<DetailBoard> newDetailBoards = detailFileHandler.parseFileInfo(detailfiles);
+        for (DetailBoard detailBoard : newDetailBoards) {
+            detailBoard.setProduct(product);
+            existingDetailBoards.add(detailBoard);
         }
+    }
 
-        for (ProductOption productOption : productOptions) {
-            productOption.setProduct(existingProduct);
+    private void updateProductOptions(Product product, List<ProductOptionRequest> optionRequests) {
+        List<ProductOption> existingProductOptions = product.getProductOptions();
+        existingProductOptions.clear();
+        if (optionRequests != null && !optionRequests.isEmpty()) {
+            for (ProductOptionRequest optionRequest : optionRequests) {
+                ProductOption option = ProductOption.builder()
+                        .optionName(optionRequest.getOptionName())
+                        .optionPrice(optionRequest.getOptionPrice())
+                        .build();
+                option.setProduct(product);
+                existingProductOptions.add(option);
+            }
         }
-
-        productRepository.save(existingProduct);
-
-        return existingProduct;
     }
 }

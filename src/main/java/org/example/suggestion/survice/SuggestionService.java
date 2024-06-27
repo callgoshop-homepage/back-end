@@ -21,10 +21,9 @@ public class SuggestionService {
     private final SuggestionRepository suggestionRepository;
     private final ProductRepository productRepository;
 
-    public List<Suggestion> save(List<Product> products) {
-        List<Suggestion> suggestions = suggestionRepository.findAll();
+    public Suggestion save(List<Product> products) {
+        Suggestion suggestion = suggestionRepository.findAll().stream().findFirst().orElse(new Suggestion());
 
-        for (Suggestion suggestion : suggestions) {
             List<Product> existProduct = suggestion.getProducts();
 
             List<Product> productsToRemove = existProduct.stream()
@@ -46,9 +45,6 @@ public class SuggestionService {
             }
 
             suggestion.setProducts(products);
-            suggestionRepository.save(suggestion);
-        }
-
-        return suggestions;
+           return suggestionRepository.save(suggestion);
     }
 }
