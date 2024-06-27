@@ -36,6 +36,7 @@ public class ProductOrderService {
                 .orElseThrow(() -> new RuntimeException("Member not found"));
 
         ProductOrder productOrder = ProductOrder.builder()
+                .orderStatus("승인대기")
                 .reciever(productOrderDto.getReciever())
                 .orderDate(LocalDateTime.now())
                 .approvalDate(null)
@@ -98,7 +99,7 @@ public class ProductOrderService {
 
 //    주문 리스트 불러오기
     public List<ProductOrder> productOrderList () {
-        return productOrderRepository.findAll();
+        return productOrderRepository.findAllByOrderByIdDesc();
     }
 
 //    주문 내역 수정하는 구문
@@ -111,6 +112,14 @@ public class ProductOrderService {
         productOrderEntity.setParcelCompany(productOrderDto.getParcelCompany());
         productOrderEntity.setInvoiceNumber(productOrderDto.getInvoiceNumber());
         productOrderEntity.setApproveStatus(productOrderDto.getApproveStatus());
+        if (productOrderDto.getApproveStatus().equals("재고부족")){
+            productOrderEntity.setOrderStatus("승인거부");
+        } else if (productOrderDto.getApproveStatus().equals("승인")) {
+            productOrderEntity.setOrderStatus("승인완료");
+        } else {
+            productOrderEntity.setOrderStatus("승인대기");
+        }
+
 
         productOrderRepository.save(productOrderEntity);
 

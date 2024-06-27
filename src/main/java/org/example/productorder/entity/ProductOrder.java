@@ -27,6 +27,9 @@ public class ProductOrder extends BaseEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
+    //    주문 상태
+    private String orderStatus;
+
     //    수취인명
     private String reciever;
 
