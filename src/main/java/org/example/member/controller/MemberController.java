@@ -51,7 +51,7 @@ public class MemberController {
         public String username;
         //        비밀번호
         @NotNull(message = "비밀번호는 6자리 이상 25자리 이하이며, 영어, 숫자, 특수문자를 포함해야 합니다.")
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{6,25}$")
+        @Pattern(regexp = "(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$")
         public String password;
         //        이름
         public String name;
