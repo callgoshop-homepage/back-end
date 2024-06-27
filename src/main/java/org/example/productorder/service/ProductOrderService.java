@@ -45,6 +45,7 @@ public class ProductOrderService {
                 .approveStatus("미승인")
                 .address(productOrderDto.getAddress())
                 .totalPrice(0L)
+                .memeberName(member.getName())
                 .member(member)
                 .buyer(member.getUsername())
                 .buyerPhoneNumber(member.getPhoneNumber())

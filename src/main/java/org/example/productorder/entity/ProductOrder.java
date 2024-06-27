@@ -30,6 +30,9 @@ public class ProductOrder extends BaseEntity {
     //    주문 상태
     private String orderStatus;
 
+    //    유저 이름
+    private String memeberName;
+
     //    수취인명
     private String reciever;
 
@@ -57,7 +60,7 @@ public class ProductOrder extends BaseEntity {
     //    총 금액
     private Long totalPrice;
 
-    //    구매자 명
+    //    수취인 명
     private String buyer;
 
     //    구매자 전화번호
