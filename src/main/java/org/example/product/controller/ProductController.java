@@ -42,7 +42,6 @@ public class ProductController {
                                           @RequestParam("parcel") String parcel,
                                           @RequestParam("options") String optionsJson) throws Exception {
 
-        ObjectMapper objectMapper = new ObjectMapper();
         List<ProductOptionRequest> optionRequests = objectMapper.readValue(optionsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, ProductOptionRequest.class));
 
         Product product = productService.createProduct(files, detailfiles, optionRequests, productName, price, productNumber, type, parcel);
@@ -110,7 +109,9 @@ public class ProductController {
     public RsData<ModifyProductResponse> modify(@RequestParam("id") Long id,
                                                 @RequestParam("files") List<MultipartFile> files,
                                                 @RequestParam("detailfiles") List<MultipartFile> detailfiles,
-                                                @RequestParam("productName") String productName,
+                                                @RequestParam("mainFilesName") List<String> mainFilesName,
+                                                @RequestParam("mainDetailFilesName") List<String> mainDetailFilesName,
+                                                    @RequestParam("productName") String productName,
                                                 @RequestParam("price") Long price,
                                                 @RequestParam("productNumber") Long productNumber,
                                                 @RequestParam("type") String type,
@@ -119,7 +120,7 @@ public class ProductController {
 
         List<ProductOptionRequest> optionRequests = objectMapper.readValue(optionsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, ProductOptionRequest.class));
 
-        productService.modifyProduct(id, files, detailfiles, optionRequests, productName, price, productNumber, type, parcel);
+        productService.modifyProduct(id, files, detailfiles, mainFilesName, mainDetailFilesName, optionRequests, productName, price, productNumber, type, parcel);
 
         return RsData.of("S-15", "수정 성공", null);
     }
