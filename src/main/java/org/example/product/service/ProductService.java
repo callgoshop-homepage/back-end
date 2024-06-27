@@ -140,7 +140,7 @@ public class ProductService {
 
     private void updateBoards(Product product, List<String> mainFilesName, List<MultipartFile> files) throws Exception {
         List<Board> existingBoards = product.getBoards();
-        String basePath = "/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/";
+        String basePath = "/Users/yunchaehyeon/Desktop/GitHub/svelte-flow2/front-app/static/img";
 
         //        데이터베이스에 파일 이름 존재하는지 확인
         List<String> existionFileNames = existingBoards.stream()
