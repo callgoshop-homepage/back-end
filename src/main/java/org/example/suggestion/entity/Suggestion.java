@@ -21,14 +21,8 @@ public class Suggestion extends BaseEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @OneToMany(mappedBy = "suggestion", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("suggestion-products")
+    @OneToMany(mappedBy = "suggestion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products;
 
-//    @PreRemove
-//    public void preRemove() {
-//        for (Product product : products) {
-//            product.setSuggestion(null);
-//        }
-//    }
 }

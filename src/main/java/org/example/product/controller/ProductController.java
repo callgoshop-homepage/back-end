@@ -23,6 +23,7 @@ import static org.springframework.util.MimeTypeUtils.ALL_VALUE;
 public class ProductController {
 
     private final ProductService productService;
+    private final ObjectMapper objectMapper;
 
     //    제품 등록
     @AllArgsConstructor
@@ -136,11 +137,10 @@ public class ProductController {
                                                 @RequestParam("parcel") String parcel,
                                                 @RequestParam("options") String optionsJson) throws Exception {
 
-        ObjectMapper objectMapper = new ObjectMapper();
         List<ProductOptionRequest> optionRequests = objectMapper.readValue(optionsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, ProductOptionRequest.class));
 
-        Product product = productService.modifyProduct(id, files, detailfiles, optionRequests, productName, price, productNumber, type, parcel);
+        productService.modifyProduct(id, files, detailfiles, optionRequests, productName, price, productNumber, type, parcel);
 
-        return RsData.of("S-15", "수정 성공", new ModifyProductResponse(product));
+        return RsData.of("S-15", "수정 성공", null);
     }
 }
