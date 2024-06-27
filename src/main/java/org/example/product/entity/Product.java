@@ -74,7 +74,7 @@ public class Product extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "suggestion_id")
-    @JsonBackReference("suggestion-products")
+    @JsonBackReference
     private Suggestion suggestion;
 
     public void addSuggestion(Suggestion suggestion) {

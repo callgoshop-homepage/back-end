@@ -7,10 +7,7 @@ import org.example.suggestion.entity.Suggestion;
 import org.example.suggestion.repository.SuggestionRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -21,30 +18,56 @@ public class SuggestionService {
     private final SuggestionRepository suggestionRepository;
     private final ProductRepository productRepository;
 
-    public Suggestion save(List<Product> products) {
+    public Suggestion saveByIds(List<Long> ids) {
         Suggestion suggestion = suggestionRepository.findAll().stream().findFirst().orElse(new Suggestion());
 
-            List<Product> existProduct = suggestion.getProducts();
+        if (suggestion.getId() == null) {
+            suggestion = suggestionRepository.save(suggestion);
+        }
 
-            List<Product> productsToRemove = existProduct.stream()
-                    .filter(product -> !products.contains(product))
-                    .collect(Collectors.toList());
+        List<Product> existingProducts = suggestion.getProducts();
 
-            for (Product product : productsToRemove) {
-                product.addSuggestion(suggestion);
-                product.setSuggestion(null);
-                productRepository.delete(product);
-            }
+        if (existingProducts == null) {
+            existingProducts = new ArrayList<>();
+        }
 
-            for (Product product : products) {
-                if (!existProduct.contains(product)) {
-                    product.addSuggestion(suggestion);
+        List<Product> productsToAdd = new ArrayList<>();
+
+        for (Long id : ids) {
+            Optional<Product> optionalProduct = productRepository.findById(id);
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
+                if (!existingProducts.contains(product)) {
                     product.setSuggestion(suggestion);
-                    productRepository.save(product);
+                    productsToAdd.add(product);
                 }
             }
+        }
 
-            suggestion.setProducts(products);
-           return suggestionRepository.save(suggestion);
+        List<Product> productsToRemove = new ArrayList<>();
+
+        for (Product product : existingProducts) {
+            if (!ids.contains(product.getId())) {
+                product.setSuggestion(null);
+                productsToRemove.add(product);
+            }
+        }
+
+        for (Product product : productsToRemove) {
+            productRepository.delete(product);
+        }
+
+        for (Product product : productsToAdd) {
+            productRepository.save(product);
+        }
+
+        suggestion.setProducts(productsToAdd);
+
+        return suggestionRepository.save(suggestion);
+    }
+
+//    추천 상품을 불러오는 구문
+    public Suggestion findAll() {
+       return suggestionRepository.findAll().stream().findFirst().orElse(new Suggestion());
     }
 }

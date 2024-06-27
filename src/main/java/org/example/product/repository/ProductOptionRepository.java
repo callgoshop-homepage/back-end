@@ -8,6 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface ProductOptionRepository extends JpaRepository<ProductOption, Long> {
-    @Transactional
-    void deleteOptionsByProduct(Product existingProduct);
+
 }
