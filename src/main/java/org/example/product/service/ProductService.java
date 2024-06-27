@@ -119,9 +119,15 @@ public class ProductService {
         Product existingProduct = findById(productId);
 
         // 기존 컬렉션을 명시적으로 업데이트
-        updateBoards(existingProduct, mainFilesName, files);
-        updateDetailBoards(existingProduct, mainDetailFilesName, detailfiles);
-        updateProductOptions(existingProduct, optionRequests);
+        if (files != null || !files.isEmpty()) {
+            updateBoards(existingProduct, mainFilesName, files);
+        }
+        if (detailfiles != null || !detailfiles.isEmpty()) {
+            updateDetailBoards(existingProduct, mainDetailFilesName, detailfiles);
+        }
+        if (optionRequests != null || !optionRequests.isEmpty()) {
+            updateProductOptions(existingProduct, optionRequests);
+        }
 
         existingProduct.setProductName(productName);
         existingProduct.setPrice(price);
@@ -162,7 +168,7 @@ public class ProductService {
         existingBoards.clear();
         existingBoards.addAll(boardsToKeep);
 
-        if (!files.isEmpty()) {
+        if (files != null && !files.isEmpty()) {
             List<Board> newBoards = fileHandler.parseFileInfo(files);
             for (Board board : newBoards) {
                 board.setProduct(product);
@@ -201,7 +207,7 @@ public class ProductService {
         existingDetailBoards.clear();
         existingDetailBoards.addAll(boardsToKeep);
 
-        if (!detailfiles.isEmpty()) {
+        if (detailfiles != null && !detailfiles.isEmpty()) {
             List<DetailBoard> newDetailBoards = detailFileHandler.parseFileInfo(detailfiles);
             for (DetailBoard detailBoard : newDetailBoards) {
                 detailBoard.setProduct(product);
