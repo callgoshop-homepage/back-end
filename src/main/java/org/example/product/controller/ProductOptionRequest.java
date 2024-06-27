@@ -15,10 +15,10 @@ import java.util.List;
 public class ProductOptionRequest extends BaseEntity {
 
     private Long id;
-    @JsonProperty("name")
+    @JsonProperty("optionName")
     private String optionName;
 
-    @JsonProperty("price")
+    @JsonProperty("optionPrice")
     private Long optionPrice;
 
     private LocalDateTime createDate;
