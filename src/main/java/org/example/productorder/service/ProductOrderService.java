@@ -16,7 +16,6 @@ import org.example.productorder.repository.ProductOrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,5 +123,10 @@ public class ProductOrderService {
         productOrderRepository.save(productOrderEntity);
 
         return productOrderEntity;
+    }
+//    id로 상품 주문 상세 정보 가져오는 구문
+    public ProductOrder getProductOrderById(Long id) {
+        Optional<ProductOrder> productOrder = productOrderRepository.findById(id);
+        return productOrder.get();
     }
 }
