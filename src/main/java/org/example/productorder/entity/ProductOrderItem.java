@@ -23,6 +23,8 @@ public class ProductOrderItem extends BaseEntity {
 
     private int count;
 
+    private String productName;
+
     private String optionName;
 
     private Long optionPrice;

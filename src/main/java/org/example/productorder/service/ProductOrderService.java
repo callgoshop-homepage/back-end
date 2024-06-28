@@ -58,11 +58,12 @@ public class ProductOrderService {
             Product product = productRepository.findById(itemDto.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
 
-            productOrder.setProductName(product.getProductName());
+//            productOrder.setProductName(product.getProductName());
 
             if (itemDto.getCount() > 0) {
                 ProductOrderItem productOrderItem = ProductOrderItem.builder()
                         .product(product)
+                        .productName(product.getProductName())
                         .count(itemDto.getCount())
                         .productOrder(productOrder)
                         .build();
@@ -76,11 +77,13 @@ public class ProductOrderService {
                 for (ProductOrderItemDto.OptionCount optionCount : itemDto.getOptions()) {
                     ProductOption productOption = productOptionRepository.findById(optionCount.getOptionId())
                             .orElseThrow(() -> new RuntimeException("Option not found"));
+//                    내일 할거 여기 runtimeexcepption 오류 터짐
 
                     ProductOrderItem productOrderItem = ProductOrderItem.builder()
                             .product(product)
                             .productOption(productOption)
                             .count(optionCount.getCount())
+                            .productName(product.getProductName())
                             .optionName(productOption.getOptionName())
                             .optionPrice(productOption.getOptionPrice())
                             .productOrder(productOrder)

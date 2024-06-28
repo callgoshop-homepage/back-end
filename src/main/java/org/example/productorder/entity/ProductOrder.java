@@ -66,9 +66,6 @@ public class ProductOrder extends BaseEntity {
     //    구매자 전화번호
     private String buyerPhoneNumber;
 
-    //    상품 명
-    private String productName;
-
     //    주문 상세 더하는 구문
     @JsonManagedReference
     @OneToMany(mappedBy = "productOrder", cascade = CascadeType.ALL, orphanRemoval = true)
