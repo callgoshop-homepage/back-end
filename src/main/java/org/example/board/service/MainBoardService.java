@@ -1,6 +1,7 @@
 package org.example.board.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.Main;
 import org.example.board.controller.DetailFileHandler;
 import org.example.board.controller.MainFileHandler;
 import org.example.board.entity.Board;
@@ -31,17 +32,46 @@ public class MainBoardService {
         this.mainFileHandler = new MainFileHandler();
     }
 
-    public List<MainBoard> addMainBoard(List<String> mainFilesName, List<MultipartFile> files) throws Exception {
-        List<MainBoard> existingMainBoards = mainBoardRepository.findAll();
+    public List<MainBoard> addMainBoard(List<MultipartFile> files) throws Exception {
+        // 파일을 저장하고 그 DetailBoard 에 대한 list 를 가지고 있는다
+        List<MainBoard> list = mainFileHandler.parseFileInfo(files);
+
+        if (list.isEmpty()){
+            // TODO : 파일이 없을 땐 어떻게 해야할까.. 고민을 해보아야 할 것
+        }
+        // 파일에 대해 DB에 저장하고 가지고 있을 것
+        else{
+            List<MainBoard> pictureBeans = new ArrayList<>();
+            for (MainBoard mainBoard : list) {
+                pictureBeans.add(mainBoardRepository.save(mainBoard));
+            }
+        }
+        return list;
+    }
+
+    public void modifyMainBoard(List<MultipartFile> files, List<String> mainFileName) throws Exception {
+        if ((files != null && !files.isEmpty()) || (!mainFileName.isEmpty() && mainFileName != null)) {
+            updateMainBoards(files, mainFileName);
+        }
+    }
+
+    private void updateMainBoards(List<MultipartFile> files, List<String> mainFilesName) throws Exception {
+        List<MainBoard> existingBoards = mainBoardRepository.findAll();
+//        /Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/
         String basePath = "/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/";
 
-        //        유지할 파일 리스트
-        List<MainBoard> boardsToKeep = existingMainBoards.stream()
+        //        데이터베이스에 파일 이름 존재하는지 확인
+        List<String> existionFileNames = existingBoards.stream()
+                .map(MainBoard::getOriginalFileName)
+                .collect(Collectors.toList());
+
+        //        파일 이름이 존재한다면 새 board리스트에 해당 데이터를 이전
+        List<MainBoard> boardsToKeep = existingBoards.stream()
                 .filter(board -> mainFilesName.contains(board.getStoredFileName()))
                 .collect(Collectors.toList());
 
         //        삭제할 파일 리스트
-        List<MainBoard> boardsToRemove = existingMainBoards.stream()
+        List<MainBoard> boardsToRemove = existingBoards.stream()
                 .filter(board -> !mainFilesName.contains(board.getStoredFileName()))
                 .collect(Collectors.toList());
 
@@ -51,16 +81,17 @@ public class MainBoardService {
             if (file.exists()) {
                 file.delete();
             }
-            mainBoardRepository.delete(mainBoard);
         }
+
+        existingBoards.clear();
+        existingBoards.addAll(boardsToKeep);
 
         if (files != null && !files.isEmpty()) {
             List<MainBoard> newBoards = mainFileHandler.parseFileInfo(files);
             for (MainBoard mainBoard : newBoards) {
-                existingMainBoards.add(mainBoard);
+                existingBoards.add(mainBoard);
             }
         }
-
         // 새로운 파일 추가
         List<MainBoard> newBoards = new ArrayList<>();
         if (files != null && !files.isEmpty()) {

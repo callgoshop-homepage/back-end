@@ -41,9 +41,15 @@ public class MvcConfig implements WebMvcConfigurer {
                 );  // 이 인터셉터를 모든 경로에 적용합니다.
     }
 
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String path = "file:/Users/choegyeonghyeon/Desktop/callgo%20shop%20프로젝트/front-app/static/img/";
+
+
         registry.addResourceHandler("/productregistration/**")
-                .addResourceLocations("file:///Users/yunchaehyeon/Desktop/GitHub/svelte-flow2/front-app/static/img");
+                .addResourceLocations(path);
+        registry.addResourceHandler("/mainview/**")
+                .addResourceLocations(path);
     }
 }

@@ -111,7 +111,7 @@ public class ProductController {
                                                 @RequestParam(value = "detailfiles", required = false) List<MultipartFile> detailfiles,
                                                 @RequestParam("mainFilesName") List<String> mainFilesName,
                                                 @RequestParam("mainDetailFilesName") List<String> mainDetailFilesName,
-                                                    @RequestParam("productName") String productName,
+                                                @RequestParam("productName") String productName,
                                                 @RequestParam("price") Long price,
                                                 @RequestParam("productNumber") Long productNumber,
                                                 @RequestParam("type") String type,
