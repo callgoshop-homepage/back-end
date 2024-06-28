@@ -8,6 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface MainBoardRepository extends JpaRepository<MainBoard, Long> {
-    @Transactional
-    void deleteByProduct(Product existingProduct);
+
 }

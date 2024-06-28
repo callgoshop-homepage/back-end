@@ -34,7 +34,7 @@ public class MainFileHandler {
 
         // 경로를 지정하고 그곳에다가 저장
 //        /Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img
-        String path = "/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img";
+        String path = "/Users/yunchaehyeon/Desktop/GitHub/svelte-flow2/front-app/static/img";
 //        current_date 일단 생략
         File file = new File(path);
         // 저장할 위치의 디렉토리가 존지하지 않을 경우

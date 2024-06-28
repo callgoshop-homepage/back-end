@@ -77,9 +77,6 @@ public class MainBoardService {
         return resultList;
     }
 
-    public void deleteDetailBoardsByProduct(Product existingProduct) {
-        mainBoardRepository.deleteByProduct(existingProduct);
-    }
 
     public List<MainBoard> getMainBoardList() {
        return mainBoardRepository.findAll();
