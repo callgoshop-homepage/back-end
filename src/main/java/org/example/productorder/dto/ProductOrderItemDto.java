@@ -7,8 +7,9 @@ import java.util.List;
 @Data
 public class ProductOrderItemDto {
     private Long productId;
+    private String productName;
     private int count;
-    private List<ProductOrderItemDto.OptionCount> options;
+    private List<OptionCount> options;
 
     @Data
     public static class OptionCount {

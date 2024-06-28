@@ -125,7 +125,6 @@ public class CartController {
         private List<Long> ids;
     }
 
-
     @DeleteMapping(value = "/delete", consumes = APPLICATION_JSON_VALUE)
     public RsData<?> deleteCart(@RequestBody DeleteCartRequest deleteCartRequest) {
 
