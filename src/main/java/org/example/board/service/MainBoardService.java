@@ -81,6 +81,7 @@ public class MainBoardService {
             if (file.exists()) {
                 file.delete();
             }
+            mainBoardRepository.delete(mainBoard);
         }
 
         existingBoards.clear();
@@ -90,6 +91,7 @@ public class MainBoardService {
             List<MainBoard> newBoards = mainFileHandler.parseFileInfo(files);
             for (MainBoard mainBoard : newBoards) {
                 existingBoards.add(mainBoard);
+                mainBoardRepository.save(mainBoard);
             }
         }
     }
