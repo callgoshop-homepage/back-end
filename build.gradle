@@ -36,7 +36,12 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0'
+
+//    mysql
     implementation 'com.mysql:mysql-connector-j'
+
+//    mariadb
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
     // postgres
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
