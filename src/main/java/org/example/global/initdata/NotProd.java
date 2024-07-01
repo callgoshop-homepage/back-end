@@ -11,7 +11,7 @@
 //import java.time.LocalDateTime;
 //
 //@Configuration
-//@Profile({"prod", "test"})
+//@Profile({"dev", "test"})
 //public class NotProd {
 //    @Bean
 //    CommandLineRunner initData(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
