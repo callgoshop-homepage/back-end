@@ -104,8 +104,6 @@ public class MainBoardService {
 
         // 최종 결과 리스트 생성
         List<MainBoard> resultList = new ArrayList<>(boardsToKeep);
-
-        return resultList;
     }
 
 
