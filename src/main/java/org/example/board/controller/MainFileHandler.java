@@ -2,6 +2,7 @@ package org.example.board.controller;
 
 import org.example.board.entity.Board;
 import org.example.board.entity.MainBoard;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,13 @@ import java.util.List;
 
 @Component
 public class MainFileHandler {
+
+    private final String uploadDir;
+
+    public MainFileHandler(@Value("${image.upload.dir}") String uploadDir) {
+        this.uploadDir = uploadDir;
+    }
+
     public List<MainBoard> parseFileInfo(List<MultipartFile> multipartFiles) throws Exception {
 
         // 반환을 할 파일 리스트
@@ -36,7 +44,7 @@ public class MainFileHandler {
 //        /Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img
         String path = "/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img";
 //        current_date 일단 생략
-        File file = new File(path);
+        File file = new File(uploadDir);
         // 저장할 위치의 디렉토리가 존지하지 않을 경우
         if (!file.exists()) {
             // mkdir() 함수와 다른 점은 상위 디렉토리가 존재하지 않을 때 그것까지 생성
@@ -67,11 +75,11 @@ public class MainFileHandler {
                 // 각 이름은 겹치면 안되므로 나노 초까지 동원하여 지정
                 String new_file_name = System.nanoTime() + originalFileExtension;
                 // 생성 후 리스트에 추가
-                MainBoard mainBoard = createMainBoardObject(multipartFile, path, new_file_name);
+                MainBoard mainBoard = createMainBoardObject(multipartFile, uploadDir, new_file_name);
                 fileList.add(mainBoard);
 
                 // 저장된 파일로 변경하여 이를 보여주기 위함
-                file = new File(path + "/" + new_file_name);
+                file = new File(uploadDir + "/" + new_file_name);
                 multipartFile.transferTo(file);
             }
         }

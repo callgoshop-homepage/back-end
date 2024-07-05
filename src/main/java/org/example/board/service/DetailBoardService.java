@@ -22,11 +22,6 @@ public class DetailBoardService {
     private final DetailBoardRepository detailBoardRepository;
     private final DetailFileHandler detailFileHandler;
 
-    @Autowired
-    public DetailBoardService(DetailBoardRepository detailBoardRepository) {
-        this.detailBoardRepository = detailBoardRepository;
-        this.detailFileHandler = new DetailFileHandler();
-    }
     public List<DetailBoard> addDetailBoard(List<MultipartFile> files) throws Exception {
         // 파일을 저장하고 그 DetailBoard 에 대한 list 를 가지고 있는다
         List<DetailBoard> list = detailFileHandler.parseFileInfo(files);

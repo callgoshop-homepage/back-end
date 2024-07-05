@@ -39,9 +39,9 @@ public class ProductOrderService {
                 .reciever(productOrderDto.getReciever())
                 .orderDate(LocalDateTime.now())
                 .approvalDate(null)
-                .deliveryMethod(null)
-                .parcelCompany(null)
-                .invoiceNumber(null)
+                .deliveryMethod("미등록")
+                .parcelCompany("미등록")
+                .invoiceNumber(0L)
                 .approveStatus("미승인")
                 .address(productOrderDto.getAddress())
                 .totalPrice(0L)
@@ -62,10 +62,12 @@ public class ProductOrderService {
 
             if (itemDto.getCount() > 0) {
                 ProductOrderItem productOrderItem = ProductOrderItem.builder()
-                        .product(product)
+//                        .product(product)
                         .productName(product.getProductName())
                         .count(itemDto.getCount())
                         .productOrder(productOrder)
+                        .optionName("옵션 없음")
+                        .optionPrice(0L)
                         .build();
 
                 productOrder.addProductOrderItem(productOrderItem);
@@ -75,13 +77,15 @@ public class ProductOrderService {
 
             if (itemDto.getOptions() != null && !itemDto.getOptions().isEmpty()) {
                 for (ProductOrderItemDto.OptionCount optionCount : itemDto.getOptions()) {
+//                    System.out.println("옵션 옵션 옵션 옵션 옵션 옵션 옵션 옵션 옵션 옵션" + optionCount);
+
                     ProductOption productOption = productOptionRepository.findById(optionCount.getOptionId())
                             .orElseThrow(() -> new RuntimeException("Option not found"));
 //                    내일 할거 여기 runtimeexcepption 오류 터짐
 
                     ProductOrderItem productOrderItem = ProductOrderItem.builder()
-                            .product(product)
-                            .productOption(productOption)
+//                            .product(product)
+//                            .productOption(productOption)
                             .count(optionCount.getCount())
                             .productName(product.getProductName())
                             .optionName(productOption.getOptionName())
@@ -122,8 +126,6 @@ public class ProductOrderService {
         } else {
             productOrderEntity.setOrderStatus("승인대기");
         }
-
-
         productOrderRepository.save(productOrderEntity);
 
         return productOrderEntity;

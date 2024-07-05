@@ -1,6 +1,7 @@
 package org.example.board.controller;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.example.board.entity.Board;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,15 @@ import java.util.List;
 @Component
 public class FileHandler {
 
+    private final String uploadDir;
+
+    public FileHandler(@Value("${image.upload.dir}") String uploadDir) {
+        this.uploadDir = uploadDir;
+    }
+
     public List<Board> parseFileInfo(List<MultipartFile> multipartFiles) throws Exception {
+
+//        System.out.println("파일경로 파일경로 파일경로 파일경로 파일경로 파일경로 파일경로: " + uploadDir);
 
         // 반환을 할 파일 리스트
         List<Board> fileList = new ArrayList<>();
@@ -38,7 +47,7 @@ public class FileHandler {
 //        /Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img
         String path = "/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img";
 //        current_date 일단 생략
-        File file = new File(path);
+        File file = new File(uploadDir);
         // 저장할 위치의 디렉토리가 존지하지 않을 경우
         if (!file.exists()) {
             // mkdir() 함수와 다른 점은 상위 디렉토리가 존재하지 않을 때 그것까지 생성
@@ -69,17 +78,17 @@ public class FileHandler {
                 // 각 이름은 겹치면 안되므로 나노 초까지 동원하여 지정
                 String new_file_name = System.nanoTime() + originalFileExtension;
                 // 생성 후 리스트에 추가
-                Board board = createBoardObject(multipartFile, path, new_file_name);
+                Board board = createBoardObject(multipartFile, uploadDir, new_file_name);
                 fileList.add(board);
 
                 // 저장된 파일로 변경하여 이를 보여주기 위함
-                file = new File(path + "/" + new_file_name);
+                file = new File(uploadDir + "/" + new_file_name);
                 multipartFile.transferTo(file);
             }
         }
         return fileList;
     }
-    private Board createBoardObject(MultipartFile multipartFile, String path, String new_file_name) {
+    private Board createBoardObject(MultipartFile multipartFile, String uploadDir, String new_file_name) {
         return Board.builder()
                 .originalFileName(multipartFile.getOriginalFilename())
                 .storedFileName(new_file_name)

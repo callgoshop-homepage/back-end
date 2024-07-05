@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="/callgo_logo.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<link rel="modulepreload" href="/_app/immutable/entry/start.C-woeoiy.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/entry.B8rvytCD.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/scheduler.DCPJa09y.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/index.WoGXbVwN.js">
+		<link rel="modulepreload" href="/_app/immutable/entry/app.BiaGwNXr.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/index.OfV0S5WN.js">
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<style>
+			.custom-shadow {
+				box-shadow:
+					0 -4px 6px -1px rgba(0, 0, 0, 0.05),
+					0 -2px 4px -1px rgba(0, 0, 0, 0.05);
+			}
+
+			/* footer 하단에 붙이는 구문 */
+			.wrapper {
+				display: flex;
+				flex-direction: column;
+				min-height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
+			}
+			.content {
+				flex: 1; /* 남은 공간을 차지하도록 설정 */
+			}
+
+			/* 디테일뷰쪽 사용 */
+			.vertical-container {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+				margin: 10px;
+			}
+
+			.horizontal-container {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin: 10px;
+			}
+
+			.left {
+				display: flex;
+				align-items: center;
+			}
+
+			.right {
+				display: flex;
+				align-items: center;
+			}
+
+			/* 상품 리스트 보이게하는 구문 */
+			/* Media query for screen widths 800px or less */
+			.grid-container {
+				width: 100%;
+				max-width: 1200px;
+				margin: 0 auto; /* Center the grid container */
+				margin-top: 50px;
+				display: grid;
+				/* grid-template-columns: repeat(4, 1fr); */
+				grid-template-columns: repeat(4, 1fr);
+				gap: 20px; /* Add some space between grid items */
+			}
+			.grid-item {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				border-radius: 5%; /* Makes the container rounded */
+				border: 1px solid #ccc; /* Adds a border to the container */
+				overflow: hidden;
+				background: #fff; /* Adds a background color to the container */
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+			}
+			.grid-item img {
+				width: 100%;
+				height: calc(10vw);
+				object-fit: fill; /* Ensures the image covers the container while maintaining aspect ratio */
+				border-bottom: 1px solid #ccc; /* Adds a border below the image */
+			}
+
+			.product-name,
+			.product-price {
+				text-align: center;
+				background-color: #fff; /* Optional: Adds a background color to the text */
+			}
+			/* 정보 수정 모달 */
+			.input-group {
+				display: flex;
+				align-items: center;
+			}
+			.input-group input {
+				flex: 1;
+			}
+			.input-group button {
+				margin-left: 8px;
+			}
+			.phone-input-group {
+				display: flex;
+				align-items: center;
+			}
+			.flexible {
+				flex: 1;
+			}
+			.phone-input-group input {
+				text-align: center;
+			}
+			/* 아이디, 비밀번호 찾기의 밑줄 없애는 구문 */
+			.modal_tabs + .h-px {
+				display: none;
+			}
+			/* navbar 윗,밑줄 */
+			.custom-navbar {
+				box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.4);
+			}
+			/* 로고, 회사명 조절 */
+			.nav-brand .brand-text {
+				/* font-size: 2rem; 텍스트 크기 조절 */
+				font-weight: bold;
+			}
+			.nav-brand .logo {
+				height: 3rem; /* 로고 이미지 높이 조절 */
+				width: auto; /* 가로 비율 자동 조절 */
+				margin-right: 1rem; /* 텍스트와의 간격 조절 */
+			}
+			/* mainview */
+			.gallery {
+				margin: 0rem 25rem 0rem 25rem;
+			}
+
+			/* 모달 테두리 색상 */
+			.custom-modal {
+				border: 8px solid rgba(252, 186, 3, 0.8);
+			}
+
+			/* 모달 버튼 색상 */
+			.modal_button {
+				background-color: #ea9e2f;
+			}
+			/* detail view */
+			.element {
+				margin-top: 25px;
+			}
+
+			.fixed-navbar {
+				position: fixed;
+				top: 0;
+				width: 100%;
+				z-index: 1000;
+			}
+
+			.thick-hr {
+				border: none;
+				height: 1px;
+				background-color: #000;
+			}
+
+			.image-container {
+				width: 500px; /* 고정 너비 */
+				height: 200px; /* 고정 높이 */
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				overflow: hidden;
+			}
+			.main-image {
+				width: 100%;
+				/* height: 100%; */
+				object-fit: contain; /* 이미지가 컨테이너에 맞게 조절됨 */
+			}
+			.thumbnail-image {
+				width: 100px;
+				height: 100px;
+				object-fit: cover;
+				cursor: pointer;
+			}
+			/* Hide input spinner */
+			input[type='number']::-webkit-outer-spin-button,
+			input[type='number']::-webkit-inner-spin-button {
+				-webkit-appearance: none;
+				margin: 0;
+			}
+			input[type='number'] {
+				-moz-appearance: textfield;
+			}
+
+			.mainCarousel {
+				height: 600px;
+			}
+
+			.mainCarousel > img {
+				/* 이미지 다들어가게 수정 */
+				height: 600px;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				border-radius: 10px;
+				border-style: hidden;
+				box-shadow: 0 0 0 1px #000;
+				white-space: nowrap;
+			}
+			th,
+			td {
+				/* border: none; */
+				border: 1px solid #ddd;
+				padding: 8px;
+			}
+			th {
+				background-color: #f2f2f2;
+				text-align: left;
+			}
+
+			tr:hover {
+				background-color: #ddd;
+			}
+
+			tr:nth-child(even) {
+				background-color: #eff2f5;
+			}
+
+			tr:not(:first-child):hover {
+				background-color: rgba(114, 114, 113, 0.2);
+			}
+
+			.carousel-wrapper {
+				width: 800px;
+				margin: 0 auto;
+			}
+			.thumbnails {
+				display: flex;
+				justify-content: center;
+				margin-top: 10px;
+			}
+			.thumbnail {
+				cursor: pointer;
+				margin: 0 5px;
+			}
+			.thumbnail img {
+				width: 100px;
+				height: 50px;
+				object-fit: cover;
+			}
+			.active-thumbnail img {
+				border: 2px solid #000;
+			}
+
+			@media (max-width: 2000px) {
+				.gallery {
+					margin: 0rem 20rem 0rem 20rem;
+				}
+			}
+			@media (max-width: 1600px) {
+				.nav-brand .brand-text {
+					display: none;
+				}
+				.grid-item img {
+					width: 100%;
+					height: calc(15vw);
+					object-fit: fill; /* Ensures the image covers the container while maintaining aspect ratio */
+					border-bottom: 1px solid #ccc; /* Adds a border below the image */
+				}
+			}
+			@media (max-width: 1500px) {
+				.gallery {
+					margin: 2rem;
+				}
+			}
+			@media (max-width: 1400px) {
+				.category_button {
+					display: none;
+				}
+			}
+			@media (max-width: 1200px) {
+				.mainCarousel > img {
+					max-width: 100%;
+					height: 700px;
+				}
+				.mainCarousel {
+					max-width: 100%;
+					height: 700px;
+				}
+			}
+			@media (max-width: 800px) {
+				.grid-item img {
+					width: 100%;
+					height: calc(30vw);
+					object-fit: fill; /* Ensures the image covers the container while maintaining aspect ratio */
+					border-bottom: 1px solid #ccc; /* Adds a border below the image */
+				}
+				.grid-container {
+					grid-template-columns: repeat(2, 1fr);
+				}
+				.mainCarousel > img {
+					max-width: 100%;
+					height: 300px;
+				}
+				.mainCarousel {
+					max-width: 100%;
+					height: 300px;
+				}
+			}
+
+			@media (max-width: 480px) {
+				.gallery {
+					margin: 2rem;
+				}
+			}
+		</style>
+		<div style="display: contents">
+			<script>
+				{
+					__sveltekit_12c6n7d = {
+						base: ""
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("/_app/immutable/entry/start.C-woeoiy.js"),
+						import("/_app/immutable/entry/app.BiaGwNXr.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>

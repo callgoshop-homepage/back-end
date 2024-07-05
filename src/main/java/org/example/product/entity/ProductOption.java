@@ -39,17 +39,17 @@ public class ProductOption extends BaseEntity {
     @JsonManagedReference
     private List<CartItem> cartItems;
 
-    @OneToMany(mappedBy = "productOption", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<ProductOrderItem> productOrderItems = new ArrayList<>();
-
-    public void addProductOrderItem(ProductOrderItem productOrderItem) {
-        if (this.productOrderItems == null) {
-            this.productOrderItems = new ArrayList<>();
-        }
-        if (!this.productOrderItems.contains(productOrderItem)) {
-            this.productOrderItems.add(productOrderItem);
-            productOrderItem.setProductOption(this);
-        }
-    }
+//    @OneToMany(mappedBy = "productOption", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference
+//    private List<ProductOrderItem> productOrderItems = new ArrayList<>();
+//
+//    public void addProductOrderItem(ProductOrderItem productOrderItem) {
+//        if (this.productOrderItems == null) {
+//            this.productOrderItems = new ArrayList<>();
+//        }
+//        if (!this.productOrderItems.contains(productOrderItem)) {
+//            this.productOrderItems.add(productOrderItem);
+//            productOrderItem.setProductOption(this);
+//        }
+//    }
 }

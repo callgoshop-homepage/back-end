@@ -29,39 +29,32 @@ public class ProductOrderItem extends BaseEntity {
 
     private Long optionPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "product_option_id")
-    @JsonBackReference
-    private ProductOption productOption;
+//    @ManyToOne
+//    @JoinColumn(name = "product_option_id")
+//    @JsonBackReference
+//    private ProductOption productOption;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    @JsonBackReference
-    private Product product;
+//    @ManyToOne
+//    @JoinColumn(name = "product_id")
+//    @JsonBackReference
+//    private Product product;
 
     @ManyToOne
     @JoinColumn(name = "product_order_id")
     @JsonBackReference
     private ProductOrder productOrder;
 
-    public void addProductOption(ProductOption productOption) {
-        this.productOption = productOption;
-        if (productOption != null && !productOption.getProductOrderItems().contains(this)) {
-            productOption.addProductOrderItem(this);
-        }
-    }
+//    public void addProductOption(ProductOption productOption) {
+//        this.productOption = productOption;
+//        if (productOption != null && !productOption.getProductOrderItems().contains(this)) {
+//            productOption.addProductOrderItem(this);
+//        }
+//    }
 
-    public void addProduct(Product product) {
-        this.product = product;
-        if (product != null && !product.getProductOrderItems().contains(this)) {
-            product.addProductOrderItem(this);
-        }
-    }
-
-    public void addProductOrder(ProductOrder productOrder) {
-        this.productOrder = productOrder;
-        if (productOrder != null && !productOrder.getProductOrderItems().contains(this)) {
-            productOrder.addProductOrderItem(this);
-        }
-    }
+//    public void addProduct(Product product) {
+//        this.product = product;
+//        if (product != null && !product.getProductOrderItems().contains(this)) {
+//            product.addProductOrderItem(this);
+//        }
+//    }
 }

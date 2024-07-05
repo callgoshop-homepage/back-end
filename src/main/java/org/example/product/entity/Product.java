@@ -58,19 +58,19 @@ public class Product extends BaseEntity {
     @JsonManagedReference("product-productOptions")
     private List<ProductOption> productOptions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference("product-productOrderItems")
-    private List<ProductOrderItem> productOrderItems = new ArrayList<>();
-
-    public void addProductOrderItem(ProductOrderItem productOrderItem) {
-        if (this.productOrderItems == null) {
-            this.productOrderItems = new ArrayList<>();
-        }
-        if (!this.productOrderItems.contains(productOrderItem)) {
-            this.productOrderItems.add(productOrderItem);
-            productOrderItem.setProduct(this);
-        }
-    }
+//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference("product-productOrderItems")
+//    private List<ProductOrderItem> productOrderItems = new ArrayList<>();
+//
+//    public void addProductOrderItem(ProductOrderItem productOrderItem) {
+//        if (this.productOrderItems == null) {
+//            this.productOrderItems = new ArrayList<>();
+//        }
+//        if (!this.productOrderItems.contains(productOrderItem)) {
+//            this.productOrderItems.add(productOrderItem);
+//            productOrderItem.setProduct(this);
+//        }
+//    }
 
     @ManyToOne
     @JoinColumn(name = "suggestion_id")

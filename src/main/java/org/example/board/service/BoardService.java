@@ -20,11 +20,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final FileHandler fileHandler;
 
-    @Autowired
-    public BoardService(BoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
-        this.fileHandler = new FileHandler();
-    }
     public List<Board> addBoard(List<MultipartFile> files) throws Exception {
         // 파일을 저장하고 그 Board 에 대한 list 를 가지고 있는다
         List<Board> list = fileHandler.parseFileInfo(files);
