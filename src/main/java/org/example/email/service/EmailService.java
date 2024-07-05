@@ -32,9 +32,9 @@ public class EmailService {
         try {
             message.setFrom(senderEmail);
             message.setRecipients(MimeMessage.RecipientType.TO, email);
-            message.setSubject("GYsoft 이메일 인증");
+            message.setSubject("CallGo 이메일 인증");
             String body = "";
-            body += "<h1>" + "안녕하세요 GYsoft 입니다." + "</h3>";
+            body += "<h1>" + "안녕하세요 CallGo 입니다." + "</h3>";
             body += "<h2>" + "아래 비밀번호로 로그인해주세요." + "</h2>";
             body += "<h1>" + str + "</h1>";
             message.setText(body, "UTF-8", "html");

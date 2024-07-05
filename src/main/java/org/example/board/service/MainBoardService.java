@@ -26,12 +26,6 @@ public class MainBoardService {
     private final MainBoardRepository mainBoardRepository;
     private final MainFileHandler mainFileHandler;
 
-    @Autowired
-    public MainBoardService(MainBoardRepository mainBoardRepository) {
-        this.mainBoardRepository = mainBoardRepository;
-        this.mainFileHandler = new MainFileHandler();
-    }
-
     public List<MainBoard> addMainBoard(List<MultipartFile> files) throws Exception {
         // 파일을 저장하고 그 DetailBoard 에 대한 list 를 가지고 있는다
         List<MainBoard> list = mainFileHandler.parseFileInfo(files);

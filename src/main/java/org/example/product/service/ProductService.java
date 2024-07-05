@@ -15,6 +15,7 @@ import org.example.product.entity.Product;
 import org.example.product.entity.ProductOption;
 import org.example.product.repository.ProductOptionRepository;
 import org.example.product.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +38,9 @@ public class ProductService {
     private final ProductOptionRepository productOptionRepository;
     private final FileHandler fileHandler;
     private final DetailFileHandler detailFileHandler;
+
+    @Value("${image.upload.dir}")
+    private String uploadDir;
 
 
     public Product createProduct(List<MultipartFile> files, List<MultipartFile> detailfiles, List<ProductOptionRequest> optionRequests, String productName, Long price, Long productNumber, String type, String parcel) throws Exception {
@@ -141,7 +145,7 @@ public class ProductService {
     private void updateBoards(Product product, List<String> mainFilesName, List<MultipartFile> files) throws Exception {
         List<Board> existingBoards = product.getBoards();
 //        /Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/
-        String basePath = "/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/";
+        String basePath = uploadDir;
 
         //        데이터베이스에 파일 이름 존재하는지 확인
         List<String> existionFileNames = existingBoards.stream()
@@ -180,7 +184,7 @@ public class ProductService {
 
     private void updateDetailBoards(Product product, List<String> mainDetailFilesName, List<MultipartFile> detailfiles) throws Exception {
         List<DetailBoard> existingDetailBoards = product.getDetailBoards();
-        String basePath = "/Users/choegyeonghyeon/Desktop/callgo shop 프로젝트/front-app/static/img/";
+        String basePath = uploadDir;
 
         //        데이터베이스에 파일 이름 존재하는지 확인
         List<String> existionDetailFileNames = existingDetailBoards.stream()
